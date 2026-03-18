@@ -42,7 +42,7 @@ module testbench();
     
     
     
-    run_test("sv_algn_test_reg_access");
+    run_test("  ");
   end
   
   cfs_aligner dut(
