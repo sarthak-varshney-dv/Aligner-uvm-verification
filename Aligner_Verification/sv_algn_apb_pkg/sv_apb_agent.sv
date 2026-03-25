@@ -9,6 +9,12 @@ class sv_apb_agent extends uvm_agent;
   //interface handler
   sv_apb_vif vif;
   
+  //sequencer handler
+  sv_apb_sequencer sequencer;
+  
+  //driver handler
+  sv_apb_driver driver;
+  
   `uvm_component_utils(sv_apb_agent)
   
   function new(string name="" , uvm_component parent);
@@ -20,6 +26,10 @@ class sv_apb_agent extends uvm_agent;
     super.build_phase(phase);
     
     agent_config = sv_apb_agent_config::type_id::create("agent_config",this);
+    sequencer    = sv_apb_sequencer::type_id::create("sequencer",this)
+    driver       = sv_apb_driver::type_id::create("driver",this)
+
+
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
@@ -31,6 +41,9 @@ class sv_apb_agent extends uvm_agent;
       else begin
         agent_config.set_vif(vif);
       end
+
+  driver.agent_config=agent_config;
+
   endfunction
   
 endclass
