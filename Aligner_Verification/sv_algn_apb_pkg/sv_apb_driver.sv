@@ -24,7 +24,7 @@ virtual task run_phase(uvm_phase phase);
  end
 
   endtask
- //non_blocking fuction to start drive transaction 
+  
 protected virtual task drive_transactions(sv_apb_item_drv item);
 
 fork
