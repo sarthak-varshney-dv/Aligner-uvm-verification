@@ -19,7 +19,29 @@ class sv_algn_test_base extends uvm_test;
     
    endfunction
     
-  
+  virtual task run_phase(uvm_phase phase);
+ phase.raise_objection(this,"test_done");
+  fork
+    begin
+      sv_apb_sequence_simple seq_simple = sv_apb_sequence_simple::type_id::create("seq");
+
+      void'(seq_simple.randomize());
+
+      seq_simple.start(env.apb_agent.sequencer);
+    end
+
+    begin
+      sv_apb_sequence_rw seq_rw = sv_apb_sequence_rw::type_id::create("seq");
+
+      void'(seq_rw.randomize() with {
+        item.addr='h0;
+        item.data='h0011;
+      });
+    end
+  join
+
+  phase.drop_objection(this,"test_done");
+  endtask
   
 endclass
 
