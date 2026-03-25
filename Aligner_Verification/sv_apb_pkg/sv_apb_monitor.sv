@@ -45,8 +45,52 @@
   protected virtual task collection();
 
     sv_apb_vif vif = agent_config.get_vif();
+
     sv_apb_item_mon item = sv_apb_item_mon::type_id::create("item");
+
+    while(vif.psel != 1) begin
+        @(posedge vif.pclk);
+        item.prev_item_delay++;
+    end
+    
+
+   item.addr = vif.addr;
+   item.dir = sv_apb_dir'(vif.write);
+   item.length=1;
+
+   if(item.dir==SV_APB_WRITE) begin
+    item.data = vif.pwdata; 
+   end
+
+   @(posedge vif.pclk);
+   item.length++;
+
+   while(vif.pready !=1) begin
+    @(posedge pclk);
+    item.length++;
+   end
+   
+   item.response=sv_apb_response'(vif.pslverr);
+
+  if(item.dir==SV_APB_READ) begin
+    item.data = vif.prdata; 
+   end
+
+   output_port.write(item);
+
+   `uvm_info("DEBUG",$sformatf("Monitored item : %0s", item.convert2string()),UVM_NONE)
+
+   @(posedge vif.pclk);
+
   endtask
+
+
+  protected task wait_reset_end();
+
+  agent_config.wait_reset_end();
+
+endtask
+
 
     
    endclass
