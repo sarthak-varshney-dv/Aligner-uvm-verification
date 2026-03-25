@@ -12,6 +12,7 @@ import uvm_pkg::*;
 `include "sv_apb_item_drv.sv"
 `include "sv_apb_item_mon.sv"
 `include "sv_apb_agent_config.sv"
+`include "sv_apb_monitor.sv"
 `include "sv_apb_agent.sv"
 `include "sv_apb_driver.sv"
 `include "sv_apb_sequencer.sv"

@@ -29,7 +29,7 @@ protected virtual task drive_transactions(sv_apb_item_drv item);
 
 fork
     begin
-        process_drive_transaction=process::self;
+        process_drive_transaction=process::self();
         
         forever begin 
             sv_apb_item_drv item=sv_apb_item_drv::type_id::create("item");

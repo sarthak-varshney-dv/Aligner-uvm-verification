@@ -14,6 +14,9 @@ class sv_apb_agent extends uvm_agent;
   
   //driver handler
   sv_apb_driver driver;
+
+  //monitor handler
+  sv_apb_monitor monitor;
   
   `uvm_component_utils(sv_apb_agent)
   
@@ -26,8 +29,9 @@ class sv_apb_agent extends uvm_agent;
     super.build_phase(phase);
     
     agent_config = sv_apb_agent_config::type_id::create("agent_config",this);
-    sequencer    = sv_apb_sequencer::type_id::create("sequencer",this)
-    driver       = sv_apb_driver::type_id::create("driver",this)
+    sequencer    = sv_apb_sequencer::type_id::create("sequencer",this);
+    driver       = sv_apb_driver::type_id::create("driver",this);
+    monitor      = sv_apb_monitor::type_id::create("monitor",this);
 
 
   endfunction
@@ -47,7 +51,8 @@ class sv_apb_agent extends uvm_agent;
         sequencer.seq_item_export.connect(driver.seq_item_port);
         driver.agent_config=agent_config;
       end
-
+      
+      monitor.agent_config=agent_config;
   endfunction
   
 endclass
