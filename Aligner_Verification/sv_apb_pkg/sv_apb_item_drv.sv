@@ -25,7 +25,7 @@ class sv_apb_item_drv extends sv_apb_item_base;
   virtual function string convert2string();
     string result=super.convert2string();
     
-    if(dir==sv_apb_write) begin
+    if(dir == SV_APB_WRITE ) begin
       result = $sformatf(" %0s , Data: %0x",result, data);
     end
     

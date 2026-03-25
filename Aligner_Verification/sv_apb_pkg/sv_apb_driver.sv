@@ -38,7 +38,7 @@ fork
 
               drive_transaction(item);
 
-            seq_item_port.item_done();
+             seq_item_port.item_done();
         end
        
     end
@@ -62,7 +62,7 @@ vif.psel   <=  1;
 vif.paddr  <=  item.addr;
 vif.write  <=  bit'(item.dir);
 
-if(item.dir=sv_apb_write) begin
+if(item.dir == SV_APB_WRITE) begin
     vif.pwdata <= item.data;
 end
 @(posedge vif.pclk);
