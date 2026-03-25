@@ -9,7 +9,7 @@ constraint num_items_default{
     soft num_items inside {[1:10]};
 }
 
-`uvm_object_utils(sv_apb_sequence_simple)
+`uvm_object_utils(sv_apb_sequence_random)
 
 function new(string name="");
 super.new(name);
@@ -24,7 +24,6 @@ for(int i=0;i<num_items;i++) begin
 
     `uvm_send(seq)
 end
-
 endtask
 
 endclass

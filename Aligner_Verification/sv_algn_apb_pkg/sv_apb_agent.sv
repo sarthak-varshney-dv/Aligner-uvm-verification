@@ -41,8 +41,12 @@ class sv_apb_agent extends uvm_agent;
       else begin
         agent_config.set_vif(vif);
       end
- sequencer.seq_item_export.connect(driver.seq_item_port);
-  driver.agent_config=agent_config;
+
+      if(agent_config.get_active_passive()==UVM_ACTIVE) begin 
+
+        sequencer.seq_item_export.connect(driver.seq_item_port);
+        driver.agent_config=agent_config;
+      end
 
   endfunction
   
