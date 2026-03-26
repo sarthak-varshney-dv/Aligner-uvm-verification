@@ -2,6 +2,36 @@
  `define SV_APB_COVERAGE_SV
 
   `uvm_analysis_imp_decl(_item)
+
+ class sv_apb_cover_index_wrapper(int unsigned max_value_plus_one = 16) extends uvm_component;
+
+ `uvm_component_param_utils#(sv_apb_cover_index_wrapper(max_value_plus_one))
+
+ covergroup cover_index with function sample(int unsigned value);
+
+  index : coverpoint value{
+    option.per_instance=1;
+
+    bins indexes[max_value_plus_one] = {{0:max_value_plus_one-1}}
+  }
+
+  virtual function new(string name="",uvm_component parent);
+  super.new(name,parent);
+
+  cover_index=new();
+  cover_index.set_inst_name($sformatf("%s_%s"),get_full_name(),"cover_index");
+  endfunction 
+
+  virtual function void sample(int unsigned value);
+  cover_index.sample(value);
+    
+  endfunction
+ endgroup
+
+
+ endclass
+
+
  class sv_apb_coverage extends uvm_component;
   
   uvm_analysis_imp_item#(sv_apb_item_mon,sv_apb_coverage) port_item;
