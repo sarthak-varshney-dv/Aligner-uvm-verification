@@ -88,12 +88,12 @@
         cover_item=new();
         cover_item.set_inst_name($sformatf("%s_%s",get_full_name(),"cover_item"));
 
-        wrap_cover_addr_0   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_0");
-        wrap_cover_addr_1   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_1"); 
-        wrap_cover_pwdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_0");
-        wrap_cover_pwdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_1"); 
-        wrap_cover_prdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_0");
-        wrap_cover_prdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_1"); 
+        wrap_cover_addr_0   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_0"    ,this);
+        wrap_cover_addr_1   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_1"    ,this); 
+        wrap_cover_pwdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_0"  ,this);
+        wrap_cover_pwdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_1"  ,this); 
+        wrap_cover_prdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_0"  ,thisg);
+        wrap_cover_prdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_1"  ,this); 
 
 
     endfunction 
@@ -138,7 +138,7 @@
         `uvm_error("ALOGRITHM ISSUE",$sformatf("item.dir:%0s not supported",item.dir.name()))
      end
     endcase
-    
+
 
  end
 
