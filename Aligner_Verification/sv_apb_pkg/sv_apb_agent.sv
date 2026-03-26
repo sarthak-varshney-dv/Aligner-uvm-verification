@@ -18,6 +18,9 @@ class sv_apb_agent extends uvm_agent;
   //monitor handler
   sv_apb_monitor monitor;
   
+  //coverage handler
+  sv_apb_coverage coverage;
+
   `uvm_component_utils(sv_apb_agent)
   
   function new(string name="" , uvm_component parent);
@@ -29,10 +32,18 @@ class sv_apb_agent extends uvm_agent;
     super.build_phase(phase);
     
     agent_config = sv_apb_agent_config::type_id::create("agent_config",this);
+
+if(agent_config.get_active_passive == UVM_ACTIVE) begin
     sequencer    = sv_apb_sequencer::type_id::create("sequencer",this);
     driver       = sv_apb_driver::type_id::create("driver",this);
+end
+
     monitor      = sv_apb_monitor::type_id::create("monitor",this);
 
+    if(agent_config.get_has_checks) begin
+      coverage = sv_apb_coverage::type_id::create("coverage");
+    end
+    
 
   endfunction
   
@@ -53,6 +64,10 @@ class sv_apb_agent extends uvm_agent;
       end
       
       monitor.agent_config=agent_config;
+
+      if(agent_config.get_has_checks) begin
+      coverage.port_item.connect(monitor.output_port);
+    end
   endfunction
   
 endclass

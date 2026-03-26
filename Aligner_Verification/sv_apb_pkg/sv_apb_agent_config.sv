@@ -6,6 +6,8 @@ class sv_apb_agent_config extends uvm_component;
   local sv_apb_vif vif;
 
   local uvm_active_passive_enum active_passive;
+
+  local bit has_checks;
   
   `uvm_component_utils(sv_apb_agent_config)
   
@@ -13,6 +15,7 @@ class sv_apb_agent_config extends uvm_component;
       super.new(name,parent);
 
       active_passive = UVM_ACTIVE;
+      has_checks=1;
    endfunction
   
  virtual function void set_vif(sv_apb_vif value);
@@ -35,6 +38,15 @@ class sv_apb_agent_config extends uvm_component;
   virtual function void set_active_passive(uvm_active_passive_enum value);
      active_passive=value;
   endfunction
+
+  virtual function void set_has_checks(bit value);
+  has_checks=value;
+  endfunction
+
+  virtual function bit get_has_checks()
+  return has_checks;
+  endfunction
+  
 endclass
 
 `endif
