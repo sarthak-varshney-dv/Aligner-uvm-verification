@@ -42,6 +42,7 @@ end
 
     if(agent_config.get_has_checks) begin
       coverage = sv_apb_coverage::type_id::create("coverage");
+      coverage.agent_config=agent_config;
     end
     
 

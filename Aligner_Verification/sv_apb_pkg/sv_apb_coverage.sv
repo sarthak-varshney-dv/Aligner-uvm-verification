@@ -12,7 +12,7 @@
   index : coverpoint value{
     option.per_instance=1;
 
-    bins indexes[max_value_plus_one] = {{0:max_value_plus_one-1}}
+    bins indexes[max_value_plus_one] = {{0:max_value_plus_one-1}};
   }
 
   virtual function new(string name="",uvm_component parent);
@@ -49,6 +49,8 @@
   sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)  wrap_cover_prdata_0;
 
   sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)  wrap_cover_prdata_1; 
+
+  sv_apb_agent_config agent_config; //to sample reset active when APB_ACCESS is ongoing
   
   `uvm_component_utils(sv_apb_coverage)
 
@@ -56,15 +58,15 @@
  option.per_instance =1;
 
   direction : coverpoint item.dir{
-    option.comment = "direction of APB_ACCESS"
+    option.comment = "direction of APB_ACCESS";
   } 
 
   response : coverpoint item.response {
-    option.comment="response of APB_ACCESS"
+    option.comment="response of APB_ACCESS";
   }
 
   length : coverpoint item.length{
-    option.comment="length of APB_ACCESS"
+    option.comment="length of APB_ACCESS";
 
     bins equal_2 = {2}; //shortest item possible
     bins less_than_ten[8] = {[3:10]};
@@ -73,18 +75,37 @@
 
 
   prev_item_delay : coverpoint item.prev_item_delay {
-    option.comment= "delay prior to APB_ACCESS"
+    option.comment= "delay prior to APB_ACCESS";
 
     bins back_to_back = {0};
     bins delay_less_5[5]= {[1:5]};
     bins delay_greater_6 = {[6:$]};
   }
 
+  response_x_direction : cross response , direction;
+
+  transition_direction : coverpoint item.dir{
+    option.comment = "transition for APB direction";
+    bins direction_trans[]= (SV_APB_READ,SV_APB_WRITE => SV_APB_READ,SV_APB_WRITE);
+
+  }
+
+ endgroup
+
+ covergroup cover_reset with function sample(bit psel);
+    option.per_instance = 1;
+
+    access_ongoing : coverpoint psel {
+        option.comment = "An APB access was ongoing at reset";
+    }
  endgroup
       
 
     function new(string name="",uvm_component parent);
     super.new(name,parent);
+
+        port_item = new("port_item",this);
+
         cover_item=new();
         cover_item.set_inst_name($sformatf("%s_%s",get_full_name(),"cover_item"));
 
@@ -92,7 +113,7 @@
         wrap_cover_addr_1   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_1"    ,this); 
         wrap_cover_pwdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_0"  ,this);
         wrap_cover_pwdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_pwdata_1"  ,this); 
-        wrap_cover_prdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_0"  ,thisg);
+        wrap_cover_prdata_0 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_0"  ,this);
         wrap_cover_prdata_1 = sv_apb_cover_index_wrapper#(`SV_APB_MAX_DATA_WIDTH)::type_id::create("wrap_cover_prdata_1"  ,this); 
 
 
@@ -141,6 +162,17 @@
 
 
  end
+
+ virtual task run_phase(uvm_phase phase)
+   cfs_apb_vif vif = agent_config.get_vif();
+    
+    forever begin
+        @(negedge vif.preset_n);
+        
+        cover_reset.sample(vif.psel);
+    end
+
+ endtask
 
  endfunction
 

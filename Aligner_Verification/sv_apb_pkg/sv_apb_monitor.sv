@@ -13,6 +13,9 @@
 
    function new (string name="",uvm_component parent)
    super.new(name,parent);
+
+   output_port = new("output_port",this);
+   
    endfunction
   
   virtual task run_phase(uvm_phase phase);
