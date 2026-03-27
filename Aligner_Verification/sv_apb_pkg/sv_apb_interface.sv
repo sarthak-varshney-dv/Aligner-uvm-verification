@@ -28,8 +28,13 @@ interface sv_apb_interface(input pclk);
   logic pready;
   
   logic pslverr;
-   
   
+  
+  bit has_checks;
+
+  initial begin
+    has_checks = 1;
+  end
   
 endinterface
 
