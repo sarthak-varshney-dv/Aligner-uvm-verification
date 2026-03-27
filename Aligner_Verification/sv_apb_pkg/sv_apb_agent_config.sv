@@ -8,6 +8,8 @@ class sv_apb_agent_config extends uvm_component;
   local uvm_active_passive_enum active_passive;
 
   local bit has_checks;
+
+  local bit has_coverage;
   
   `uvm_component_utils(sv_apb_agent_config)
   
@@ -46,7 +48,14 @@ class sv_apb_agent_config extends uvm_component;
   virtual function bit get_has_checks()
   return has_checks;
   endfunction
-  
+
+  virtual function void set_has_coverage(bit value);
+  has_coverage=value;
+  endfunction
+
+  virtual function bit get_has_coverage()
+  return has_coverage;
+  endfunction
 endclass
 
 `endif

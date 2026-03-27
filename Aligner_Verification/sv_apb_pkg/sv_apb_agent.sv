@@ -40,7 +40,7 @@ end
 
     monitor      = sv_apb_monitor::type_id::create("monitor",this);
 
-    if(agent_config.get_has_checks) begin
+    if(agent_config.get_has_coverage()) begin
       coverage = sv_apb_coverage::type_id::create("coverage");
       coverage.agent_config=agent_config;
     end
