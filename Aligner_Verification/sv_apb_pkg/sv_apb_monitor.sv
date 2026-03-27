@@ -15,7 +15,7 @@
    super.new(name,parent);
 
    output_port = new("output_port",this);
-   
+
    endfunction
   
   virtual task run_phase(uvm_phase phase);
@@ -71,6 +71,12 @@
    while(vif.pready !=1) begin
     @(posedge pclk);
     item.length++;
+   end
+
+   if(agent_config.get_has_checks() == 1) begin
+     if(item.length >= agent_config.get_stuck_threshold()) begin
+        `uvm_error("PROTOCOL ERROR", $sformatf("The APB transfer reached the stuck threshold of %0d clock cycles",item.length))
+     end
    end
    
    item.response=sv_apb_response'(vif.pslverr);

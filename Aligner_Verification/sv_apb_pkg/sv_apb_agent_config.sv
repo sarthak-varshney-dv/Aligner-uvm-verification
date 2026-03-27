@@ -11,7 +11,7 @@ class sv_apb_agent_config extends uvm_component;
 
   local bit has_coverage;
 
-  local bit 
+  local int unsigned stuck_threshold;
   
   `uvm_component_utils(sv_apb_agent_config)
   
@@ -21,6 +21,7 @@ class sv_apb_agent_config extends uvm_component;
       active_passive = UVM_ACTIVE;
       has_checks=1;
       has_coverage=1;
+      stuck_threshold =100;
    endfunction
   
  virtual function void set_vif(sv_apb_vif value);
@@ -64,6 +65,17 @@ class sv_apb_agent_config extends uvm_component;
 
   virtual function bit get_has_coverage()
   return has_coverage;
+  endfunction
+
+    virtual function void set_stuck_threshold(bit value);
+    if(value<=2)begin     // since minimum clock cycles in apb transfer is 2
+      `uvm_error("ALGORITHM_ISSUE","Tried to set stuck threshold less than  or equal to 2")
+    end
+  stuck_threshold=value;
+  endfunction
+
+  virtual function bit get_stuck_threshold()
+  return stuck_threshold;
   endfunction
 
   virtual function void run_phase(uvm_phase phase);
