@@ -71,6 +71,27 @@ end
     end
   endfunction
   
+virtual function void handle_reset() 
+
+ uvm_component children[$];
+
+ get_children(children);
+  sv_apb_reset_handler handler;
+  foreach(children[idx]) begin
+    if($cast(handler,children[idx])) begin
+      handler.handle_reset();
+    end
+  end
+endfunction
+
+virtual task run_phase(uvm_phase phase)
+forever begin
+
+  agent_config.wait_reset_start();
+  handle_reset();
+  
+end
+endtask
 endclass
 
 `endif

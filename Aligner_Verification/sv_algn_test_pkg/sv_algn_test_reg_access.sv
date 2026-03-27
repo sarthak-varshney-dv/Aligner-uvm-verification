@@ -21,7 +21,32 @@ class sv_algn_test_base extends uvm_test;
     
   virtual task run_phase(uvm_phase phase);
  phase.raise_objection(this,"test_done");
+
+  #(100ns);
   fork
+    begin   //to drive reset
+      sv_apb_vif vif = env.apb_agent.agent_config.get_vif();
+      #(1ns);
+      vif.preset_n<=0 ;  //driving reset in the begining
+
+      //now we drive reset after 3 apb transfers
+
+      repeat(3) begin
+        @(posedge vif.psel);
+      end
+
+      #(10ns)  ;
+      vif.preset_n<=0 ;
+
+      //driving reset back low
+
+      repeat(4) begin
+        @(posedge vif.pclk);
+      end
+
+      vif.preset_n <= 1;
+
+    end
     begin
       sv_apb_sequence_simple seq_simple = sv_apb_sequence_simple::type_id::create("seq");
 
