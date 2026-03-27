@@ -10,6 +10,8 @@ class sv_apb_agent_config extends uvm_component;
   local bit has_checks;
 
   local bit has_coverage;
+
+  local bit 
   
   `uvm_component_utils(sv_apb_agent_config)
   
@@ -65,11 +67,13 @@ class sv_apb_agent_config extends uvm_component;
   endfunction
 
   virtual function void run_phase(uvm_phase phase);
-    
-    @(vif.has_checks) 
+    forever begin
+    @(vif.has_checks) ;
 
     if(vif.has_checks != has_checks) begin
-      `uvm_error("error","can't chage value of has checks directly from the interface")
+      `uvm_error("ALOGORITHM_ISSUE","can't chage value of has checks directly from the interface")
+    end
+
     end
 
 
