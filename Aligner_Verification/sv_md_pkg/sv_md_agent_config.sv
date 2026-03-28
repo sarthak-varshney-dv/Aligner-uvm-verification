@@ -1,9 +1,11 @@
-`ifndef SV_APB_AGENT_CONGIG_SV
- `define SV_APB_AGENT_CONGIG_SV
+`ifndef SV_MD_AGENT_CONFIG_SV
+ `define  SV_MD_AGENT_CONFIG_SV
 
-class sv_apb_agent_config extends uvm_component;
+ class sv_md_agent_config#(int unsigned DATA_WIDTH = 32) extends uvm_component ;
+
+  typedef virtual sv_md_if sv_md_vif ;
   
-  local sv_apb_vif vif;
+  local sv_md_vif vif;
 
   local uvm_active_passive_enum active_passive;
 
@@ -11,9 +13,7 @@ class sv_apb_agent_config extends uvm_component;
 
   local bit has_coverage;
 
-  local int unsigned stuck_threshold;
-  
-  `uvm_component_utils(sv_apb_agent_config)
+  `uvm_component_param_utils(sv_md_agent_config)
   
   function new(string name="" , uvm_component parent);
       super.new(name,parent);
@@ -21,21 +21,21 @@ class sv_apb_agent_config extends uvm_component;
       active_passive = UVM_ACTIVE;
       has_checks=1;
       has_coverage=1;
-      stuck_threshold =100;
+      
    endfunction
   
- virtual function void set_vif(sv_apb_vif value);
+ virtual function void set_vif(sv_md_vif value);
     if(vif==null) begin
     vif=value;
-
     set_has_checks(get_has_checks());      //to set the has checks value in the interface only when vif is not null.
+    
     end
     else begin
       `uvm_fatal("ALGORITHM_ISSUE","trying to set interface more than once")
     end
   endfunction
   
-  virtual function sv_apb_vif get_vif();
+  virtual function sv_md_vif get_vif();
      return vif;
   endfunction
 
@@ -49,7 +49,7 @@ class sv_apb_agent_config extends uvm_component;
 
   virtual function void set_has_checks(bit value);
   has_checks=value;
-  if(vif != null) begin                 // To synchronize has_cheks of agent config and the interface.
+   if(vif != null) begin                 // To synchronize has_cheks of agent config and the interface.
     vif.has_checks = has_checks;
   end
   endfunction
@@ -61,32 +61,21 @@ class sv_apb_agent_config extends uvm_component;
   virtual function void set_has_coverage(bit value);
   has_coverage=value;
 
-  
   endfunction
 
   virtual function bit get_has_coverage()
   return has_coverage;
   endfunction
 
-    virtual function void set_stuck_threshold(bit value);
-    if(value<=2)begin     // since minimum clock cycles in apb transfer is 2
-      `uvm_error("ALGORITHM_ISSUE","Tried to set stuck threshold less than  or equal to 2")
-    end
-  stuck_threshold=value;
-  endfunction
-
-  virtual function bit get_stuck_threshold()
-  return stuck_threshold;
-  endfunction
 
   virtual task wait_reset_start()  //Asynchronous reset 
-  if(vif.preset_n !=0)begin
-   @(negedge vif.preset_n);
+  if(vif.reset_n !=0)begin
+   @(negedge vif.reset_n);
   end
   endtask
 
   virtual task wait_reset_end() //synchronous
-  while(vif.preset_n == 0) begin
+  while(vif.reset_n == 0) begin
    @(posedge vif.clk) ;
   end
   endtask
@@ -104,6 +93,9 @@ class sv_apb_agent_config extends uvm_component;
 
 
   endfunction
-endclass
 
-`endif
+
+
+ endclass
+
+ `endif

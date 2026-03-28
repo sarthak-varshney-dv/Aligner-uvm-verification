@@ -21,7 +21,11 @@ interface sv_md_interface#(int unsigned  DATA_WIDTH = 32) (input clk);
 
  logic err ; 
 
+ bit has_checks ;
 
+ initial begin
+    has_checks = 1 ; 
+ end
 
 endinterface
 
