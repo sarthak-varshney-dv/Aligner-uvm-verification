@@ -1,7 +1,7 @@
 `ifndef SV_APB_SEQUENCER_SV
  `define SV_APB_SEQUENCER_SV
 
- class sv_apb_sequencer extends uvm_sequencer#(.REQ(sv_apb_item_drv))  implements cfs_apb_reset_handler;
+ class sv_apb_sequencer extends uvm_sequencer#(.REQ(sv_apb_item_drv))  implements sv_apb_reset_handler;
 
   rand sv_apb_item_drv item;
     

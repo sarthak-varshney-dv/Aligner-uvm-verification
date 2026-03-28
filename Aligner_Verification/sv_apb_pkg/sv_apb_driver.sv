@@ -1,7 +1,7 @@
 `ifndef SV_APB_DRIVER_SV
  `define SV_APB_DRIVER_SV
 
-class sv_apb_driver extends uvm_driver#(.REQ(sv_apb_item_drv)) implements cfs_apb_reset_handler;
+class sv_apb_driver extends uvm_driver#(.REQ(sv_apb_item_drv)) implements sv_apb_reset_handler;
 
    sv_apb_agent_config agent_config;
 

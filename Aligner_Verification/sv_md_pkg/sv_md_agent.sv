@@ -1,7 +1,7 @@
 `ifndef SV_MD_AGENT_SV
  `define SV_MD_AGENT_SV
 
-class sv_md_agent(int unsigned DATA_WIDTH = 32) extends uvm_agent implements cfs_apb_reset_handler;
+class sv_md_agent(int unsigned DATA_WIDTH = 32) extends uvm_agent implements sv_md_reset_handler;
   
    typedef virtual sv_md_if#(DATA_WIDTH) sv_md_vif ;
 
@@ -10,7 +10,6 @@ class sv_md_agent(int unsigned DATA_WIDTH = 32) extends uvm_agent implements cfs
   
   //interface handler
   sv_md_vif vif;
-  
 
   `uvm_component_param_utils(sv_md_agent#(DATA_WIDTH))
   
