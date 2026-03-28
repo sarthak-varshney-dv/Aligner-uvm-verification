@@ -9,6 +9,7 @@ package sv_algn_test_pkg;
  import uvm_pkg::*;
  import sv_algn_pkg::*;
  import sv_apb_pkg::*;
+ import sv_md_pkg::*;
  
 
  `include "sv_algn_test_base.sv"

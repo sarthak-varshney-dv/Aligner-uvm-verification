@@ -3,11 +3,13 @@
 
 `include "uvm_macros.svh"
 `include "sv_apb_pkg.sv"
+`include "sv_md_pkg.sv"
 
 package sv_algn_pkg;
 
  import uvm_pkg::*;
  import sv_apb_pkg::*;
+ import sv_md_pkg::*;
  
 
  `include "sv_algn_env.sv"
