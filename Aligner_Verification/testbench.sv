@@ -20,7 +20,7 @@ module testbench();
   
   initial begin
     apb_if.preset_n=1;
-    #6;
+    #3;
     apb_if.preset_n=0;
     #30;
     apb_if.preset_n=1;

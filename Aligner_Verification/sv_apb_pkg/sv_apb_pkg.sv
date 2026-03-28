@@ -8,6 +8,7 @@ package sv_apb_pkg;
 import uvm_pkg::*;
 
 `include "sv_apb_types.sv"
+`include "sv_apb_reset_handler"
 `include "sv_apb_item_base.sv"
 `include "sv_apb_item_drv.sv"
 `include "sv_apb_item_mon.sv"
@@ -16,6 +17,7 @@ import uvm_pkg::*;
 `include "sv_apb_agent.sv"
 `include "sv_apb_driver.sv"
 `include "sv_apb_sequencer.sv"
+`include "sv_apb_coverage.sv"
 
 `include "sv_apb_sequence_base"
 `include "sv_apb_sequence_simple"

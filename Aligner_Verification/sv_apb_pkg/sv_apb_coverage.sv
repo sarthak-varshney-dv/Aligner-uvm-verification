@@ -32,7 +32,7 @@
  endclass
 
 
- class sv_apb_coverage extends uvm_component;
+ class sv_apb_coverage extends uvm_component implements sv_apb_reset_handler;
   
   //port to connect from monitor
   uvm_analysis_imp_item#(sv_apb_item_mon,sv_apb_coverage) port_item;
@@ -162,19 +162,26 @@
 
 
  end
+virtual function void handle_reset(uvm_phase phase)
+   cfs_apb_vif vif = agent_config.get_vif();
+    cover_reset.sample(vif.psel);     //sample the value of psel when reset is called. will indicate whether access was active or not while reset asserted.
+
+endfunction
+
+/* we dont need this now we will do it now in the handle reset function which will automatically sample our condition when agent will call reset
 
  virtual task run_phase(uvm_phase phase)
    cfs_apb_vif vif = agent_config.get_vif();
     
     forever begin
         @(negedge vif.preset_n);
-        
+
         cover_reset.sample(vif.psel);
     end
 
  endtask
-
- endfunction
+*/
+ 
 
 
  endclass 

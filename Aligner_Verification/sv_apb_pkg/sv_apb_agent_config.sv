@@ -78,14 +78,18 @@ class sv_apb_agent_config extends uvm_component;
   return stuck_threshold;
   endfunction
 
-  virtual function void wait_reset_start()
+  virtual task wait_reset_start()  //Asynchronous reset 
+  if(vif.preset_n !=0)begin
    @(negedge vif.preset_n);
   end
-  
-  virtual function void wait_reset_endt()
-   @(posedge vif.clk) iff (vif.preset_n ==1);
+  endtask
+
+  virtual task wait_reset_end() //synchronous
+  while(vif.preset_n == 0) begin
+   @(posedge vif.clk) ;
   end
-  
+  endtask
+
   virtual function void run_phase(uvm_phase phase);
     forever begin
     @(vif.has_checks) ;

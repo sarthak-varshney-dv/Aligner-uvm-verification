@@ -26,8 +26,7 @@ class sv_algn_test_base extends uvm_test;
   fork
     begin   //to drive reset
       sv_apb_vif vif = env.apb_agent.agent_config.get_vif();
-      #(1ns);
-      vif.preset_n<=0 ;  //driving reset in the begining
+    
 
       //now we drive reset after 3 apb transfers
 

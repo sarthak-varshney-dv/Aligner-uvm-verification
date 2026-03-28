@@ -71,11 +71,12 @@ end
     end
   endfunction
   
-virtual function void handle_reset() 
+virtual function void handle_reset(uvm_phase phase) 
 
  uvm_component children[$];
 
  get_children(children);
+
   sv_apb_reset_handler handler;
   foreach(children[idx]) begin
     if($cast(handler,children[idx])) begin
@@ -84,12 +85,22 @@ virtual function void handle_reset()
   end
 endfunction
 
+  virtual task wait_reset_start()  //Asynchronous reset 
+    agent_config.wait_reset_start();
+  endtask
+
+  virtual task wait_reset_end() //synchronous
+    agent_config.wait_reset_end();
+  
+  endtask
+
 virtual task run_phase(uvm_phase phase)
 forever begin
 
-  agent_config.wait_reset_start();
+  wait_reset_start();
   handle_reset();
-  
+  wait_reset_end();
+
 end
 endtask
 endclass

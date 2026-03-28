@@ -1,7 +1,7 @@
 `ifndef SV_APB_MONITOR_SV
  `define SV_APB_MONITOR_SV
 
-   class sv_apb_monitor extends uvm_monitor;
+   class sv_apb_monitor extends uvm_monitor implements sv_apb_reset_handler;
 
    sv_apb_agent_config agent_config;
 
@@ -100,7 +100,16 @@
 
 endtask
 
+virtual function void handle_reset(uvm_phase phase);
 
+  if(process_drive_transaction != null) begin
+    process_collect_transaction.kill();
+
+    process_collect_transaction = null;
+  end
+
+
+endfunction
     
    endclass
 `endif

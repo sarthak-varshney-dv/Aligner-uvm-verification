@@ -1,11 +1,12 @@
 `ifndef SV_APB_DRIVER_SV
  `define SV_APB_DRIVER_SV
 
-class sv_apb_driver extends uvm_driver#(.REQ(sv_apb_item_drv));
+class sv_apb_driver extends uvm_driver#(.REQ(sv_apb_item_drv)) implements cfs_apb_reset_handler;
 
    sv_apb_agent_config agent_config;
 
  protected process process_drive_transaction;
+ 
     `uvm_component_utils(sv_apb_driver)
 
     function new(string name="",uvm_component parent);
@@ -87,11 +88,29 @@ end
 
 endtask
 
-protected task wait_reset_end();
+virtual task wait_reset_end();
 
   agent_config.wait_reset_end();
 
 endtask
+
+virtual function void handle_reset(uvm_phase phase);
+  sv_apb_vif = agent_config.get_vif();
+
+  if(process_drive_transaction != null) begin
+    process_drive_transaction.kill();
+
+    process_drive_transaction = null;
+  end
+
+  vif.psel <= 0;
+  vif.penable <= 0;
+  vif.write <= 0;
+  vif.paddr <= 0;
+  vif.pwdata <= 0;
+
+endfunction
+
 
 endclass 
  `endif
