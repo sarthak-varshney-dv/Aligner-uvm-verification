@@ -9,6 +9,10 @@ package sv_md_pkg ;
 import uvm_pkg::*;
 
 `include "sv_md_agent_config.sv"
+`include "sv_md_agent_config_master.sv"
+`include "sv_md_agent_config_slave.sv"
+
+
 
 
  

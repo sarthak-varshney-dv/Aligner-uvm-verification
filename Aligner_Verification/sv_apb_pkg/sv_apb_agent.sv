@@ -1,7 +1,7 @@
 `ifndef SV_APB_AGENT_SV
  `define SV_APB_AGENT_SV
 
-class sv_apb_agent extends uvm_agent;
+class sv_apb_agent extends uvm_agent implements cfs_apb_reset_handler ;
   
   //handler of agent config
   sv_apb_agent_config agent_config;

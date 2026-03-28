@@ -3,7 +3,7 @@
 
  class sv_md_agent_config#(int unsigned DATA_WIDTH = 32) extends uvm_component ;
 
-  typedef virtual sv_md_if sv_md_vif ;
+  typedef virtual sv_md_if#(DATA_WIDTH) sv_md_vif ;
   
   local sv_md_vif vif;
 
@@ -13,7 +13,7 @@
 
   local bit has_coverage;
 
-  `uvm_component_param_utils(sv_md_agent_config)
+  `uvm_component_param_utils(sv_md_agent_config#(DATA_WIDTH))
   
   function new(string name="" , uvm_component parent);
       super.new(name,parent);
