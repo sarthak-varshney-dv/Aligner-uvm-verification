@@ -26,7 +26,7 @@ virtual task run_phase(uvm_phase phase);
 
   endtask
   
-protected virtual task drive_transactions(sv_apb_item_drv item);
+protected virtual task drive_transactions();
 
 fork
     begin
