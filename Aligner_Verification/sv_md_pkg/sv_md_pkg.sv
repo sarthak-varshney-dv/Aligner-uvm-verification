@@ -11,7 +11,14 @@ import uvm_pkg::*;
 `include "sv_md_agent_config.sv"
 `include "sv_md_agent_config_master.sv"
 `include "sv_md_agent_config_slave.sv"
+`include "sv_md_item_base.sv"
+`include "sv_md_item_drv.sv"
+`include "sv_md_item_drv_master.sv"
 
+
+`include "sv_md_agent_master.sv"
+`include "sv_md_agent_slave.sv"
+`include "sv_md_agent.sv"
 
 
 
