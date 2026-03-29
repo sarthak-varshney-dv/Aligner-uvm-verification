@@ -33,7 +33,7 @@ fork
         process_drive_transaction=process::self();
         
         forever begin 
-            sv_apb_item_drv item=sv_apb_item_drv::type_id::create("item");
+            sv_apb_item_drv item ;
 
              seq_item_port.get_next_item(item);
 

@@ -34,8 +34,8 @@ fork
         process_drive_transaction=process::self();
         
         forever begin 
-            ITEM_DRV item=sv_md_item_drv::type_id::create("item");
-
+            ITEM_DRV item ;
+            
              seq_item_port.get_next_item(item);
 
               drive_transaction(item);
