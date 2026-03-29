@@ -24,7 +24,11 @@ class sv_md_agent(int unsigned DATA_WIDTH = 32 , type ITEM_DRV = sv_md_item_drv)
     super.build_phase(phase);
     
     agent_config = sv_md_agent_config#(DATA_WIDTH)::type_id::create("agent_config",this);
-
+    
+    if(agent_config.get_active_passive == UVM_ACTIVE) begin
+    sequencer    =  sv_md_sequencer_base#(ITEM_DRV)::type_id::create("sequencer",this);
+    //driver       = sv_apb_driver::type_id::create("driver",this);
+end
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
