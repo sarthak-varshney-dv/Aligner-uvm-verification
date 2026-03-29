@@ -20,6 +20,9 @@ import uvm_pkg::*;
 `include "sv_md_agent_slave.sv"
 `include "sv_md_agent.sv"
 
+`include "sv_md_sequence_base.sv"
+`include "sv_md_sequence_base_master.sv"
+`include "sv_md_sequence_simple_master.sv"
 
 
  
