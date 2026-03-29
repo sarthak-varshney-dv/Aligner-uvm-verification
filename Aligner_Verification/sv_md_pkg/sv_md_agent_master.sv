@@ -21,4 +21,4 @@
   
 
  endclass
-  `endif  sv_md_sequencer_base#(ITEM_DRV)
+  `endif 
