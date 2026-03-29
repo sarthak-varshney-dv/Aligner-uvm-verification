@@ -1,7 +1,7 @@
 `ifndef SV_MD_AGENT_MASTER_SV
  `define SV_MD_AGENT_MASTER_SV
 
- class sv_md_agent_master(int unsigned DATA_WIDTH = 32) extends sv_md_agent implements sv_md_reset_handler;
+ class sv_md_agent_master(int unsigned DATA_WIDTH = 32) extends sv_md_agent#(.DATA_WIDTH(DATA_WIDTH), .ITEM_DRV(sv_md_item_drv_master)) implements sv_md_reset_handler;
 
   //handler of agent config
   sv_md_agent_config_master#(DATA_WIDTH) agent_config;

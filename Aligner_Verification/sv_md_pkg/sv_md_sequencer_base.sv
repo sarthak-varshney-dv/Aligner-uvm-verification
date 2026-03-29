@@ -1,17 +1,15 @@
-`ifndef SV_APB_SEQUENCER_SV
- `define SV_APB_SEQUENCER_SV
+`ifndef SV_MD_SEQUENCER_BASE_SV
+ `define SV_MD_SEQUENCER_BASE_SV
 
- class sv_apb_sequencer extends uvm_sequencer#(.REQ(sv_apb_item_drv))  implements sv_apb_reset_handler;
+ class sv_md_sequencer_base#(type ITEM_DRV = sv_md_item_drv) extends uvm_sequencer#(.REQ(ITEM_DRV))  implements sv_md_reset_handler;
 
-  rand sv_apb_item_drv item;
     
-    `uvm_component_utils(sv_apb_sequencer)
+    `uvm_component_param_utils(sv_md_sequencer_base#(ITEM_DRV))
 
     function new(string name="", uvm_component parent);
      super.new(name,parent);
         
     endfunction 
-
 
 
      virtual function void handle_reset(uvm_phase phase);
@@ -26,6 +24,11 @@
 
         start_phase_sequence(phase); //restart
       endfunction
+
+      virtual function int unsigned get_data_width();
+        `uvm_fatal("ALGORITHM_ISSUE","need to implement get_data_width function in master and slave sequencers");
+      endfunction
  endclass 
 
  `endif
+ 
