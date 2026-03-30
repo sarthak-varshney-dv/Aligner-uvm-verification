@@ -53,28 +53,31 @@
 
     sv_md_item_mon item = sv_md_item_mon::type_id::create("item");
 
-    
+    @(get_sample_delay_start_tr());
 
     while(vif.valid != 1) begin
         @(posedge vif.clk);
+        @(get_sample_delay_start_tr());
+
         item.prev_item_delay++;
     end
     
  
    item.offset = vif.offset;
-   item.data.size() = vif.size;
 
-   bit[data_width-1:0] temp:
-   temp =vif.data;
-    
-   for(int i =0 ; i<item.size ; i++) begin
-    item.data[i] = ('hff << (i*8)) & temp;
+    //Pushing data into queue
+   for(int i =0 ; i<vif.size ; i++) begin
+    data.push_back(data>>((item.offset+idx)*8) & 'hFF );
    end
 
-   
-   void'(begin_tr(item));
-   output_port.write(item);
    item.length=1;
+
+   void'(begin_tr(item));
+
+   `uvm_info("DEBUG",$sformatf("Monitoring started : %0s", item.convert2string()),UVM_NONE)
+   
+   output_port.write(item);
+   
 
    @(posedge vif.clk);
    item.length++;
@@ -87,10 +90,11 @@
    item.response=sv_md_response'(vif.err);
 
    void'(end_tr(item));
-   output_port.write(item);
 
    `uvm_info("DEBUG",$sformatf("Monitored item : %0s", item.convert2string()),UVM_NONE)
-
+    
+    output_port.write(item);
+    
    @(posedge vif.clk);
 
   endtask

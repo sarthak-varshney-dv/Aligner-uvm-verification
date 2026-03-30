@@ -13,7 +13,9 @@
 
   local bit has_coverage;
   
-  local 
+  //field to delay monitoring in the start of transaction
+  local time sample_delay_start_tr;
+  
   `uvm_component_param_utils(sv_md_agent_config#(DATA_WIDTH))
   
   function new(string name="" , uvm_component parent);
@@ -22,6 +24,7 @@
       active_passive = UVM_ACTIVE;
       has_checks=1;
       has_coverage=1;
+      sample_delay_start_tr=1ns;
       
    endfunction
   
@@ -68,6 +71,13 @@
   return has_coverage;
   endfunction
 
+ virtual function time get_sample_delay_start_tr()
+     return sample_delay_start_tr;
+  endfunction
+
+  virtual function void set_sample_delay_start_tr(time value);
+     sample_delay_start_tr=value;
+  endfunction
 
   virtual task wait_reset_start()  //Asynchronous reset 
   if(vif.reset_n !=0)begin
