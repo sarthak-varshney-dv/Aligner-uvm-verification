@@ -12,7 +12,8 @@
   local bit has_checks;
 
   local bit has_coverage;
-
+  
+  local 
   `uvm_component_param_utils(sv_md_agent_config#(DATA_WIDTH))
   
   function new(string name="" , uvm_component parent);

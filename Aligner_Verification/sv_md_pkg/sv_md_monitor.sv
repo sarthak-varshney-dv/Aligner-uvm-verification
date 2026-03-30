@@ -53,23 +53,25 @@
 
     sv_md_item_mon item = sv_md_item_mon::type_id::create("item");
 
+    
+
     while(vif.valid != 1) begin
         @(posedge vif.clk);
         item.prev_item_delay++;
     end
     
-
+ 
    item.offset = vif.offset;
    item.data.size() = vif.size;
 
    bit[data_width-1:0] temp:
    temp =vif.data;
     
-   for(int i =0 ; i<item.data.size() ; i++) begin
-    item.data[i] = ('h11 << i) & temp;
+   for(int i =0 ; i<item.size ; i++) begin
+    item.data[i] = ('hff << (i*8)) & temp;
    end
 
-   #1;
+   
    void'(begin_tr(item));
    output_port.write(item);
    item.length=1;
