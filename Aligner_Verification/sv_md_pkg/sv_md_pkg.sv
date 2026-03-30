@@ -27,7 +27,7 @@ import uvm_pkg::*;
 
 
 `include "sv_md_driver_master.sv"
-//`include "sv_md_driver_slave.sv"
+`include "sv_md_driver_slave.sv"
 `include "sv_md_driver.sv"
 
 `include "sv_md_monitor.sv"

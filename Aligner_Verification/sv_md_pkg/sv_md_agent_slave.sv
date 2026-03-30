@@ -13,7 +13,10 @@
       //overriding base with master config in constructor .
        sv_md_agent_config#(DATA_WIDTH)::type_id::
              set_inst_override(sv_md_agent_config_slave#(DATA_WIDTH)::get_type(),"agent_config",this);
-                     
+
+      sv_md_driver#(ITEM_DRV)::type_id::
+         set_inst_override(sv_md_driver_slave#(DATA_WIDTH)::get_type(),"driver",this);
+                             
    endfunction
   
 

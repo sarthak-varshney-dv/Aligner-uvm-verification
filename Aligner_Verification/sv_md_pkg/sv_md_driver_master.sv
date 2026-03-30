@@ -1,11 +1,10 @@
-`ifndef SV_MD_DRIVER_SV
- `define SV_MD_DRIVER_SV
+`ifndef SV_MD_DRIVER_MASTER_SV
+ `define SV_MD_DRIVER_MASTER_SV
 
 class sv_md_driver_master#(int unsigned DATA_WIDTH = 32) extends sv_md_driver#(.ITEM_DRV(sv_md_item_drv_master))) implements sv_md_reset_handler;
 
    typedef virtual sv_md_if#(DATA_WIDTH) sv_md_vif ;
 
-   protected process process_drive_transaction;
  
     `uvm_component_param_utils(sv_md_driver_master#(DATA_WIDTH))
 
@@ -15,7 +14,7 @@ class sv_md_driver_master#(int unsigned DATA_WIDTH = 32) extends sv_md_driver#(.
     endfunction 
 
     
-protected virtual task drive_transaction(ITEM_DRV item);
+protected virtual task drive_transaction(sv_md_item_drv_master item);
 
   sv_md_if vif = agent_config.get_vif();
 
