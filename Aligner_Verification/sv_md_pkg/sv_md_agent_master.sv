@@ -17,7 +17,7 @@
      sv_md_sequencer_base#(ITEM_DRV)::type_id::
          set_inst_override(sv_md_sequencer_master#(DATA_WIDTH)::get_type(),"sequencer",this);
 
-     sv_md_driver#(ITEM_DRV)::type_id::
+     sv_md_driver#(DATA_WIDTH,ITEM_DRV)::type_id::
          set_inst_override(sv_md_driver_master#(DATA_WIDTH)::get_type(),"driver",this);
                                  
    endfunction

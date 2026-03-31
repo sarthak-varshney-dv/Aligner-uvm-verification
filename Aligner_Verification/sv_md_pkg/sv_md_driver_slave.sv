@@ -1,7 +1,7 @@
 `ifndef SV_MD_DRIVER_SLAVE_SV
  `define SV_MD_DRIVER_SLAVE_SV
 
-class sv_md_driver_slave#(int unsigned DATA_WIDTH = 32) extends sv_md_driver#(.ITEM_DRV(sv_md_item_drv_master))) implements sv_md_reset_handler;
+class sv_md_driver_slave#(int unsigned DATA_WIDTH = 32) extends sv_md_driver#(.DATA_WIDTH(DATA_WIDTH),.ITEM_DRV(sv_md_item_drv_master))) implements sv_md_reset_handler;
 
    typedef virtual sv_md_if#(DATA_WIDTH) sv_md_vif ;
 

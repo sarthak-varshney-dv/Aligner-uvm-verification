@@ -27,6 +27,28 @@ interface sv_md_interface#(int unsigned  DATA_WIDTH = 32) (input clk);
     has_checks = 1 ; 
  end
 
+  //DATA_WIDTH must be power of 2
+  initial begin
+    if($countones(DATA_WIDTH) !=1) begin
+      $error($sformatf("DATA_WIDTH is not a power of two"));
+    end
+  end
+
+  //Minimum value 
+
+
+ property valid_not_unknown;
+   @(posedge clk) disable iff (!has_checks || !reset_n)
+   
+   is_unknown(valid) == 0;
+
+ endproperty
+ 
+ VALID_NOT_UNKNOWN: assert property(valid_not_unknown) else 
+                   begin
+                     `uvm_error("ALGORITHM_ISSUE","valid had a unknown value")
+                   end
+
 endinterface
 
  `endif
