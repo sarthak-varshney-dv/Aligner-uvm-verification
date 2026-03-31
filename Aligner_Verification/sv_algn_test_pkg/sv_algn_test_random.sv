@@ -15,11 +15,21 @@ class sv_algn_test_random extends sv_algn_test_base;
   phase.raise_objection(this."test_done");
 
   #(100ns);
+
+fork    //for starting slave_response_forever in the background
+   
    begin
-      sv_md_sequence_base_master seq= sv_md_sequence_base_master::type_id::create("seq");
+           sv_md_sequence_slave_response_forever seq_response =sv_md_sequence_slave_response_forever::type_id::create("seq_response") ;
+
+            seq_response.start(env.md_tx_agent.sequencer) ;
+    end
+join_none
+   begin
+       repeat(10) begin
+      sv_md_sequence_simple_master seq= sv_md_sequence_base_master::type_id::create("seq");
       seq.set_sequencer(env.md_rx_agent.sequencer);
 
-      repeat(10) begin
+     
          void'(randomize(seq));
 
       seq.start(env.md_rx_agent.sequencer);
