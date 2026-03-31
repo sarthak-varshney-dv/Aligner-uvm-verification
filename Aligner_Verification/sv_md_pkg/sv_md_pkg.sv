@@ -20,8 +20,8 @@ import uvm_pkg::*;
 `include "sv_md_sequencer_base.sv"
 `include "sv_md_sequencer_master_base.sv"
 `include "sv_md_sequencer_master.sv"
-//`include "sv_md_sequencer_slave_base.sv"
-//`include "sv_md_sequencer_slave.sv"
+`include "sv_md_sequencer_slave_base.sv"
+`include "sv_md_sequencer_slave.sv"
 
 
 
@@ -41,6 +41,15 @@ import uvm_pkg::*;
 `include "sv_md_sequence_base.sv"
 `include "sv_md_sequence_base_master.sv"
 `include "sv_md_sequence_simple_master.sv"
+`include "sv_md_sequence_base_slave.sv"
+`include "sv_md_sequence_simple_slave.sv"
+`include "sv_md_sequence_slave_response.sv"
+`include "sv_md_sequence_slave_response_forever.sv"
+
+
+
+
+
 
 
  
