@@ -16,9 +16,35 @@
 
       sv_md_driver#(ITEM_DRV)::type_id::
          set_inst_override(sv_md_driver_slave#(DATA_WIDTH)::get_type(),"driver",this);
-                             
+
+      sv_md_sequencer_base#(ITEM_DRV)::type_id::
+         set_inst_override(sv_md_sequencer_slave#(DATA_WIDTH)::get_type(),"driver",this);
+                                     
    endfunction
-  
+   
+   virtual function void connecct_phase(uvm_phase phase);
+    super.connect_phase(phase);
+
+    connect_port_from_mon_to_slave_seqr();
+   endfunction
+
+   
+
+   protected virtual function void connect_port_from_mon_to_slave_seqr();
+
+   
+   if(agent_config.get_active_passive == UVM_ACTIVE) begin
+    sv_md_sequencer_slave#(DATA_WIDTH) sequencer;
+     
+
+    if ($cast(sequencer,super.sequencer)==0)begin
+      `uvm_fatal("ALGORITHM_ISSUE",$sformatf("could not cast the sequencer handlers in slave agent"))
+    end
+   
+   monitor.output_port.connect(sequencer.port_from_mon) ;
+   end
+   
+   endfunction
 
  endclass
   `endif

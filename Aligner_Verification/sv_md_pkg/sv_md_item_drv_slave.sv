@@ -16,7 +16,7 @@ rand bit ready_at_end ;
   endfunction
 
   constraint length_default{
-    lsoft ength<=5 ;
+    soft length<=5 ;
   };
   
   virtual function string convert2string();
