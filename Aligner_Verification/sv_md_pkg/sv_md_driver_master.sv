@@ -49,7 +49,7 @@ protected virtual task drive_transaction(sv_md_item_drv_master item);
 
  @(posedge vif.clk) ;
 
- while(vif.ready !=1) begin
+ while(vif.ready !==1) begin
      @(posedge vif.clk) ;
  end
 

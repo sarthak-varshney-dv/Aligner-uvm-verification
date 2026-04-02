@@ -80,7 +80,7 @@ class sv_apb_agent_config extends uvm_component;
   endfunction
 
   virtual task wait_reset_start()  //Asynchronous reset 
-  if(vif.preset_n !=0)begin
+  if(vif.preset_n !==0)begin
    @(negedge vif.preset_n);
   end
   endtask

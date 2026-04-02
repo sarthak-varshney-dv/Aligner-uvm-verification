@@ -55,7 +55,7 @@
 
     @(get_sample_delay_start_tr());
 
-    while(vif.valid != 1) begin
+    while(vif.valid !== 1) begin
         @(posedge vif.clk);
         @(get_sample_delay_start_tr());
 
@@ -82,14 +82,16 @@
    @(posedge vif.clk);
    item.length++;
 
-   while(vif.ready !=1) begin
+   while(vif.ready !==1) begin
     @(posedge clk);
     item.length++;
+
+    if(item.length>agent_config.get_stuck_threshold()) begin
+    `uvm_fatal("PROTOCOL_ERROR",$sformatf("%0sg Transaction: %0s length exceeded the threshold",get_full_name(),item.convert2string() ))
+   end
    end
 
-   if(item.length>agent_config.get_stuck_threshold()) begin
-    `uvm_fatal($sformatf("%0s Transaction: %0s length exceeded the threshold",get_full_name(),item.convert2string() ))
-   end
+   
 
    item.response=sv_md_response'(vif.err);
 

@@ -72,7 +72,7 @@ penable <=1 ;
 
 @(posedge vif.pclk);
 
-while(vif.pready !=1) begin
+while(vif.pready !==1) begin
     @(posedge vif.pclk);
 end
 

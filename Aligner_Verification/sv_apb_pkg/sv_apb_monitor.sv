@@ -51,7 +51,7 @@
 
     sv_apb_item_mon item = sv_apb_item_mon::type_id::create("item");
 
-    while(vif.psel != 1) begin
+    while(vif.psel !== 1) begin
         @(posedge vif.pclk);
         item.prev_item_delay++;
     end
@@ -68,7 +68,7 @@
    @(posedge vif.pclk);
    item.length++;
 
-   while(vif.pready !=1) begin
+   while(vif.pready !==1) begin
     @(posedge pclk);
     item.length++;
    end

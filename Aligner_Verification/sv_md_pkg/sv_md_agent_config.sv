@@ -90,7 +90,7 @@
   endfunction
 
   virtual task wait_reset_start()  //Asynchronous reset 
-  if(vif.reset_n !=0)begin
+  if(vif.reset_n !==0)begin
    @(negedge vif.reset_n);
   end
   endtask

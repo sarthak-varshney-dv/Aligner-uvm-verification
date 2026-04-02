@@ -31,7 +31,7 @@ protected virtual task drive_transaction(sv_md_item_drv_slave item);
   `uvm_info("DEBUG",$sformatf("Driving \"%0s\" : %0s",item.get_full_name(),item.convert2string(),UVM_NONE))
 
   // A check
-  if(vif.valid !=1)begin
+  if(vif.valid !==1)begin
    `uvm_error("ALGORITHM_ISSUE",$sformatf("Trying to drive slave item when no item started by master - item:  %0s."
                      item.convert2string ())) 
   end
