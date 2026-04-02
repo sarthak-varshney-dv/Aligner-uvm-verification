@@ -87,6 +87,10 @@
     item.length++;
    end
 
+   if(item.length>agent_config.get_stuck_threshold()) begin
+    `uvm_fatal($sformatf("%0s Transaction: %0s length exceeded the threshold",get_full_name(),item.convert2string() ))
+   end
+
    item.response=sv_md_response'(vif.err);
 
    void'(end_tr(item));

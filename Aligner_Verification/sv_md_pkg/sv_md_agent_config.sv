@@ -13,6 +13,7 @@
 
   local bit has_coverage;
   
+  local bit stuck_threshold ;
   //field to delay monitoring in the start of transaction
   local time sample_delay_start_tr;
   
@@ -25,6 +26,7 @@
       has_checks=1;
       has_coverage=1;
       sample_delay_start_tr=1ns;
+      stuck_threshold=100;
       
    endfunction
   
@@ -77,6 +79,14 @@
 
   virtual function void set_sample_delay_start_tr(time value);
      sample_delay_start_tr=value;
+  endfunction
+
+   virtual function bit get_stuck_threshold()
+     return stuck_threshold;
+  endfunction
+
+  virtual function void set_stuck_threshold(bit value);
+     stuck_threshold=value;
   endfunction
 
   virtual task wait_reset_start()  //Asynchronous reset 
