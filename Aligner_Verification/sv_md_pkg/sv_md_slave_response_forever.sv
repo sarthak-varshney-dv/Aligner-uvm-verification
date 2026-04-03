@@ -15,7 +15,7 @@ virtual task body();
 forever begin
     
 begin
-  sv_md_sequence_simple_slave_response seq_response ;
+  sv_md_sequence_slave_response seq_response ;
 
   `uvm_do_on(seq_response , p_sequencer)
     
