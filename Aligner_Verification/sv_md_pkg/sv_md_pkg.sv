@@ -23,15 +23,12 @@ import uvm_pkg::*;
 `include "sv_md_sequencer_slave_base.sv"
 `include "sv_md_sequencer_slave.sv"
 
-
-
-
 `include "sv_md_driver_master.sv"
 `include "sv_md_driver_slave.sv"
 `include "sv_md_driver.sv"
 
 `include "sv_md_monitor.sv"
-
+`include "sv_md_coverage.sv"
 
 `include "sv_md_agent_master.sv"
 `include "sv_md_agent_slave.sv"
@@ -45,12 +42,6 @@ import uvm_pkg::*;
 `include "sv_md_sequence_simple_slave.sv"
 `include "sv_md_sequence_slave_response.sv"
 `include "sv_md_sequence_slave_response_forever.sv"
-
-
-
-
-
-
 
  
 endpackage
