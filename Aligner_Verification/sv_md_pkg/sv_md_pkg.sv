@@ -1,5 +1,5 @@
 `ifndef SV_MD_PKG_SV
- `define SV_MD_PKF_SV
+ `define SV_MD_PKG_SV
  
  `include "sv_md_interface.sv"
  `include "uvm_macros.svh"
