@@ -107,6 +107,7 @@
         port_item = new("port_item",this);
 
         cover_item=new();
+        cover_reset=new();
         cover_item.set_inst_name($sformatf("%s_%s",get_full_name(),"cover_item"));
 
         wrap_cover_addr_0   = sv_apb_cover_index_wrapper#(`SV_APB_MAX_ADDR_WIDTH)::type_id::create("wrap_cover_addr_0"    ,this);
@@ -161,7 +162,7 @@
     endcase
 
 
- end
+ endfunction
 virtual function void handle_reset(uvm_phase phase)
    cfs_apb_vif vif = agent_config.get_vif();
     cover_reset.sample(vif.psel);     //sample the value of psel when reset is called. will indicate whether access was active or not while reset asserted.

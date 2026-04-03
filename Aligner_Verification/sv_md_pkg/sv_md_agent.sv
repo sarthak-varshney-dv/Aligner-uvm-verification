@@ -37,6 +37,11 @@ class sv_md_agent(int unsigned DATA_WIDTH = 32 , type ITEM_DRV = sv_md_item_drv)
 
     monitor      = sv_md_monitor#(DATA_WIDTH)::type_id::create("monitor",this);
 
+    if(agent_config.get_has_coverage==1) begin
+    coverage       = sv_md_coverage#(DATA_WIDTH)::type_id::create("coverage",this);
+      
+    end
+
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
@@ -56,6 +61,11 @@ class sv_md_agent(int unsigned DATA_WIDTH = 32 , type ITEM_DRV = sv_md_item_drv)
       end
 
       monitor.agent_config=agent_config;
+
+    if(agent_config.get_has_coverage==1) begin
+    monitor.output_port.connect(coverage.port_item);
+    coverage.agent_config = agent_config ;
+    end
 
   endfunction
   
