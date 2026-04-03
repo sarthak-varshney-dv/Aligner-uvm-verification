@@ -26,7 +26,7 @@ endfunction
 
 
 protected virtual task drive_transaction(sv_md_item_drv_slave item);
-  sv_apb_vif = agent_config.get_vif();
+  sv_md_vif = agent_config.get_vif();
   
   `uvm_info("DEBUG",$sformatf("Driving \"%0s\" : %0s",item.get_full_name(),item.convert2string(),UVM_NONE))
 
@@ -38,7 +38,7 @@ protected virtual task drive_transaction(sv_md_item_drv_slave item);
 
   vif.ready<=0;
 
-  for(int i=0;i<length;i++) begin
+  for(int i=0;i<item.length;i++) begin
      @(posedge vif.clk);
   end
 
@@ -55,11 +55,11 @@ endtask
 
 virtual function void handle_reset(uvm_phase phase);
 
-  sv_apb_vif = agent_config.get_vif();
+  sv_md_vif = agent_config.get_vif();
 
   super.handle_reset(phase);
 
- vif.ready<=agent_config.getready_at_reset;
+ vif.ready<=agent_config.get_ready_at_reset;
  vif.err<=0 ;
 
 endfunction
