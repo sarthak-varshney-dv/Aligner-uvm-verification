@@ -4,12 +4,16 @@
 `include "uvm_macros.svh"
 `include "sv_apb_pkg.sv"
 `include "sv_md_pkg.sv"
+`include "sv_algn_reg_pkg.sv"
+
 
 package sv_algn_pkg;
 
  import uvm_pkg::*;
  import sv_apb_pkg::*;
  import sv_md_pkg::*;
+ import sv_algn_reg_pkg::*;
+
  
 
  `include "sv_algn_env.sv"
