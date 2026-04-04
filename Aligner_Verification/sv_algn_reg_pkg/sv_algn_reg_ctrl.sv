@@ -20,7 +20,7 @@ virtual function void build()
 
 SIZE = uvm_reg_field::type_id::create(.name("SIZE"), .parent(null), .comtext(get_full_name()));
 OFFSET = uvm_reg_field::type_id::create(.name("OFFSET"), .parent(null), .comtext(get_full_name()));
-CLR = uvm_reg_field::type_id::create(.name("CLEAR"), .parent(null), .comtext(get_full_name()));
+CLR = uvm_reg_field::type_id::create(.name("CLR"), .parent(null), .comtext(get_full_name()));
 
 SIZE.configure(
     .parent(this),
