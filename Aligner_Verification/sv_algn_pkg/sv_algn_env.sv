@@ -25,6 +25,13 @@ class sv_algn_env extends uvm_env;
     md_tx_agent= sv_md_agent_slave#(32)::type_id::create("md_tx_agent",this);
     
   endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+  super.connect_phase(phase);
+  
+  
+
+  endfunction
   
 endclass
 

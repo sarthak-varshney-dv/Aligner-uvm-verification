@@ -24,6 +24,8 @@ import uvm_pkg::*;
 `include "sv_apb_sequence_rw"
 `include "sv_apb_sequence_random"
 
+`include "sv_apb_reg_adapter.sv"
+
 
 
 endpackage
