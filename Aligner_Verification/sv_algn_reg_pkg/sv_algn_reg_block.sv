@@ -25,14 +25,16 @@ default_map = create_map(
     .base_addr('h0000),
     .n_bytes(4),
     .endian(UVM_LITTLE_ENDIAN),
-    .bit(1)
+    .byte_addressing(1)
 
 );
 
+default_map.set_check_on_read(1);
+
 CTRL = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
-STATUS = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
-IRQ = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
-IRQEN = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
+STATUS = sv_algn_reg_ctrl::type_id::create(.name("STATUS"), .parent(null), .comtext(get_full_name()));
+IRQ = sv_algn_reg_ctrl::type_id::create(.name("IRQ"), .parent(null), .comtext(get_full_name()));
+IRQEN = sv_algn_reg_ctrl::type_id::create(.name("IRQEN"), .parent(null), .comtext(get_full_name()));
 
 CTRL.configure(.blk_parent(this));
 STATUS.configure(.blk_parent(this));
@@ -45,7 +47,7 @@ IRQ.build();
 IRQEN.build();
 
 default_map.add_reg(.rg(CTRL),.offest('h0000),.rights("RW"));
-default_map.add_reg(.rg(STATUS),.offest('h000C),.rights("RW"));
+default_map.add_reg(.rg(STATUS),.offest('h000C),.rights("RO"));
 default_map.add_reg(.rg(IRQ),.offest('h00F0),.rights("RW"));
 default_map.add_reg(.rg(IRQEN),.offest('h00F4),.rights("RW"));
 
