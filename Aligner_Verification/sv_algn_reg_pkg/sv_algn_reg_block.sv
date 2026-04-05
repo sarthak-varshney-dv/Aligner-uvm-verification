@@ -15,7 +15,42 @@ rand sv_algn_reg_irqen IRQEN ;
 
 function new(string name = "");
 
-super.new(.name(name))
+super.new(name,UVM_NO_COVERAGE)
+endfunction
+
+virtual function void build();
+
+default_map = create_map(
+    .name("APB_MAP"),
+    .base_addr('h0000),
+    .n_bytes(4),
+    .endian(UVM_LITTLE_ENDIAN),
+    .bit(1)
+
+);
+
+CTRL = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
+STATUS = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
+IRQ = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
+IRQEN = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
+
+CTRL.configure(.blk_parent(this));
+STATUS.configure(.blk_parent(this));
+IRQ.configure(.blk_parent(this));
+IRQEN.configure(.blk_parent(this));
+
+CTRL.build();
+STATUS.build();
+IRQ.build();
+IRQEN.build();
+
+default_map.add_reg(.rg(CTRL),.offest('h0000),.rights("RW"));
+default_map.add_reg(.rg(STATUS),.offest('h000C),.rights("RW"));
+default_map.add_reg(.rg(IRQ),.offest('h00F0),.rights("RW"));
+default_map.add_reg(.rg(IRQEN),.offest('h00F4),.rights("RW"));
+
+
+
 endfunction
 
 
