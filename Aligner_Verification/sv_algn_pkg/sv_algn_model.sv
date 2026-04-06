@@ -23,9 +23,16 @@ reg_block.lock_model();
 
 
 end
-
-
 endfunction
+
+
+virtual function void handle_reset(uvm_phase phase);
+
+    reg_block.handle_reset("HARD");
+  endfunction
+  
+
+
 endclass
 
  `endif 

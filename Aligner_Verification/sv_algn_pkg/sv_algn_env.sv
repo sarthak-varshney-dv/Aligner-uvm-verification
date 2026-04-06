@@ -44,6 +44,30 @@ class sv_algn_env extends uvm_env;
 
   endfunction
   
+  virtual function void handle_reset(uvm_phase phase);
+
+    model.handle_reset(phase);
+  endfunction
+  
+  protected virtual task wait_reset_start()
+   apb_agent.agent_config.wait_reset_start();
+  endtask
+
+ protected virtual task wait_reset_end()
+   apb_agent.agent_config.wait_reset_end();
+  endtask
+
+  virtual task run_phase(uvm_phase phase);
+   forever begin
+
+     wait_reset_start();
+     handle_reset(phase);
+     wait_reset_end();
+
+   end
+  
+
+  endtask
 endclass
 
 `endif
