@@ -47,6 +47,9 @@ class sv_algn_env extends uvm_env;
 
   apb_agent.output_port.connect(predictor.bus_in);
 
+   predictor.env_config = env_config;
+
+
 
   endfunction
   
