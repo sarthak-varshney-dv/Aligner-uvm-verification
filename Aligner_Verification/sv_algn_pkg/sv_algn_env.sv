@@ -10,6 +10,8 @@ class sv_algn_env extends uvm_env;
   sv_md_agent_slave#(32) md_tx_agent;
 
   sv_algn_reg_predictor#(sv_apb_item_mon) predictor ;
+
+  sv_algn_env_config env_config ;
   
   `uvm_component_utils(sv_algn_env)
   
@@ -21,13 +23,17 @@ class sv_algn_env extends uvm_env;
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     
+    env_config = sv_algn_env_config::type_id::create("env_config",this);
+
+    env_config.set_algn_data_width(32);
+
     apb_agent=   sv_apb_agent::type_id::create("apb_agent",this);
 
     md_rx_agent= sv_md_agent_master#(32)::type_id::create("md_rx_agent",this);
     md_tx_agent= sv_md_agent_slave#(32)::type_id::create("md_tx_agent",this);
 
     predictor = sv_algn_reg_predictor#(sv_apb_item_mon)::type_id::create("predictor",this);
-    
+
   endfunction
 
   virtual function void connect_phase(uvm_phase phase);
