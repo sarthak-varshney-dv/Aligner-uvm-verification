@@ -15,8 +15,11 @@ package sv_algn_pkg;
  import sv_algn_reg_pkg::*;
 
  
-
+ `include "sv_algn_env_config.sv"
  `include "sv_algn_env.sv"
+ `include "sv_algn_model.sv"
+ `include "sv_algn_reg_predictor.sv"
+ `include "sv_algn_reset_handler.sv"
 
 
 endpackage
