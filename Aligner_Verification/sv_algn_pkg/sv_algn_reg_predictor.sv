@@ -11,12 +11,7 @@
       super.new(name, parent);
     endfunction
 
-    virtual function void write(BUS_TYPE tr);
-
-    uvm_reg_bus_op operation ;
-
-    adapter.bus2reg(tr,operation) ;
-
+ 
     virtual function uvm_reg_data_t get_reg_field_value(uvm_reg_field field , uvm_reg_data_t reg_data);
 
     mask = (('h1<<field.get_n_bits())-1) << field.get_lsb_pos() ;
@@ -80,6 +75,13 @@
 
 
     endfunction
+
+    virtual function void write(BUS_TYPE tr);
+
+    uvm_reg_bus_op operation ;
+
+    adapter.bus2reg(tr,operation) ;
+
 
     uvm_status_e tr_legality = get_expected_response(operation);
 

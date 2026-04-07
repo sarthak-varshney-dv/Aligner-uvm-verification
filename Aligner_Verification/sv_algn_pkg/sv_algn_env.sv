@@ -45,7 +45,7 @@ class sv_algn_env extends uvm_env;
 
   predictor.map = model.reg_block.default_map ;
 
-  apb_agent.output_port.connect(predictor.bus_in);
+  apb_agent.monitor.output_port.connect(predictor.bus_in);
 
    predictor.env_config = env_config;
 
