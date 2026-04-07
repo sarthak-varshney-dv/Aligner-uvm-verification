@@ -13,6 +13,9 @@ class sv_algn_test_reg_access extends uvm_test;
   
     
   virtual task run_phase(uvm_phase phase);
+  uvm_status_e status ; 
+  uvm_reg_data_t data ;
+
  phase.raise_objection(this,"test_done");
 
   #(100ns);
@@ -39,15 +42,35 @@ class sv_algn_test_reg_access extends uvm_test;
       vif.preset_n <= 1;
 
     end
-    begin
+    begin  //write ti CTRL register via adapter
+
+    // env.model.reg_block.CTRL.write(status, 32'h00000202)
+      
+      env.model.reg_block.CTRL.SIZE.set(2);
+      env.model.reg_block.CTRL.OFFSET.set(2);
+      env.model.reg_block.CTRL.update(status);
+
+      //to read 
+      env.model.reg_block.CTRL.read(status.data);
+
+      //to randomize the ctrl register according to constraints added in CTRL register file
+      void'(env.model.reg_block.CTRL.randomize) ;
+      env.model.reg_block.CTRL.update(status);
+
+    end
+
+    begin  //read to CTRL REGISTER
       sv_apb_sequence_simple seq_simple = sv_apb_sequence_simple::type_id::create("seq");
 
-      void'(seq_simple.randomize());
+      void'(seq_simple.randomize() with{
+        item.addr == 'h00 ;
+        item.dir == SV_APB_READ ; 
+      });
 
       seq_simple.start(env.apb_agent.sequencer);
     end
 
-    begin
+    begin //a transaction on md interface
       sv_apb_sequence_rw seq_rw = sv_apb_sequence_rw::type_id::create("seq");
 
       void'(seq_rw.randomize() with {

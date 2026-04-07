@@ -1,7 +1,9 @@
 `ifndef SV_ALGN_MODEL_SV
  `define SV_ALGN_MODEL_SV
 
-class sv_algn_model extends uvm_component 
+class sv_algn_model extends uvm_component implements sv_algn_reset_handler ;
+
+sv_algn_env_config env_config ;
 
 sv_algn_reg_block reg_block ;
 
@@ -24,6 +26,14 @@ reg_block.lock_model();
 
 end
 endfunction
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+super.end_of_elaboration_phase(phase);
+
+reg_block.CTRL.SET_ALGN_DATA_WIDTH(env_config.get_algn_data_width());
+
+endfunction
+
 
 
 virtual function void handle_reset(uvm_phase phase);

@@ -49,6 +49,9 @@ class sv_algn_env extends uvm_env;
 
    predictor.env_config = env_config;
 
+   model.env_config = env_config;
+
+
   //sequencer and adapter connenction established
   model.reg_block.default_map.set_sequencer(apb_agent.sequencer , adapter) ; 
 

@@ -33,7 +33,7 @@ end
  endfunction
 
 virtual function uvm_sequence_item reg2bus(const ref uvm_reg_bus_op rw);
-sv_apb_item_drv item_drv ;
+sv_apb_item_drv item_drv =  sv_apb_item_drv::type_id::create("item") ;
 
 void'(item_drv.randomize with{ 
      
@@ -42,6 +42,7 @@ void'(item_drv.randomize with{
      item.addr = rw.addr ; 
 
 });
+return item_drv ;
 endfunction
  endclass
  `endif
