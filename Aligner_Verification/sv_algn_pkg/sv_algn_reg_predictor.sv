@@ -63,7 +63,7 @@
                 return UVM_NOT_OKAY ;
             end
 
-            if (((data_width/8)+offset)%size == 0 ) begin
+            if (((data_width/8)+offset)%size != 0 ) begin
                 return UVM_NOT_OKAY ;
                 
             end
