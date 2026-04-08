@@ -55,6 +55,12 @@ class sv_algn_env extends uvm_env;
   //sequencer and adapter connenction established
   model.reg_block.default_map.set_sequencer(apb_agent.sequencer , adapter) ; 
 
+  //connecting model to monitors of md agents
+
+  md_rx_agent.monitor.output_port.connect(model.port_in_rx);
+
+  md_tx_agent.monitor.output_port.connect(model.port_in_tx);
+
 
   endfunction
   
