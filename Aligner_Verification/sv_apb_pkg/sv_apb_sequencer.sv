@@ -3,8 +3,6 @@
 
  class sv_apb_sequencer extends uvm_sequencer#(.REQ(sv_apb_item_drv))  implements sv_apb_reset_handler;
 
-  rand sv_apb_item_drv item;
-    
     `uvm_component_utils(sv_apb_sequencer)
 
     function new(string name="", uvm_component parent);

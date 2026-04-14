@@ -1,7 +1,7 @@
 `ifndef SV_APB_SEQUENCE_BASE_SV
  `define SV_APB_SEQUENCE_BASE_SV
 
-class sv_apb_sequence_base extends uvm_sequence#(.REQ(sv_apb_iten_drv));
+class sv_apb_sequence_base extends uvm_sequence#(.REQ(sv_apb_item_drv));
 
 `uvm_declare_p_sequencer(sv_apb_sequencer)
 

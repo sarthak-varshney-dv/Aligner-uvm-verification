@@ -67,7 +67,7 @@
 
     //Pushing data into queue
    for(int i =0 ; i<vif.size ; i++) begin
-    data.push_back(data>>((item.offset+idx)*8) & 'hFF );
+    data.push_back(vif.data>>((item.offset+idx)*8) & 'hFF );
    end
 
    item.length=1;
