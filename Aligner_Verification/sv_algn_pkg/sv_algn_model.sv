@@ -24,7 +24,12 @@ uvm_analysis_port#(sv_md_response) port_out_tx ;
 
 uvm_analysis_port#(bit) port_out_irq ;
 
- protected bit exp_irq;
+protected bit exp_irq;
+
+
+local process process_push_to_rx_fifo ;
+
+protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
 
 
 `uvm_component_utils(sv_algn_model)
@@ -50,6 +55,7 @@ if(reg_block == null) begin
 reg_block.build();
 reg_block.lock_model();
 
+ rx_fifo = new("rx_fifo",this,8);
 
 end
 endfunction
@@ -71,11 +77,23 @@ super.end_of_elaboration_phase(phase);
 
 endfunction
 
+virtual function void kill_process(ref process p);
 
+if( p != null) begin
+  p.kill();
+
+  p=null ;
+end
+endfunction
 
 virtual function void handle_reset(uvm_phase phase);
 
     reg_block.handle_reset("HARD");
+
+    rx_fifo.flush();
+
+    kill_process(process_push_to_rx_fifo);
+
   endfunction
 
 virtual function sv_md_response get_exp_response(sv_md_item_mon item);
@@ -112,6 +130,21 @@ virtual function void set_max_drop();
 
 endfunction
 
+virtual function void set_rx_fifo_full();
+
+  void'(reg_block.IRO.RX_FIFO_FULL.predict(1));
+
+  
+      `uvm_info("RX_FIFO_FULL", $sformatf("Rx FiFO reached max value - %0s: %0d",
+                                   reg_block.IRQEN.RX_FIFO_FULL.get_full_name(),
+                                      reg_block.IRQEN.RX_FIFO_FULL.get_mirrored_value()), UVM_MEDIUM)
+      
+      if(reg_block.IRQEN.RX_FIFO_FULL.get_mirrored_value() == 1) begin
+        exp_irq = 1;
+      end
+
+endfunction
+
 virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
   
@@ -129,13 +162,55 @@ uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
       end
 
 endfunction
+
+virtual function void inc_rx_level();
   
+        void'(reg_block.STATUS.RX_LVL.predict(reg_block.STATUS.RX_LVL.get_mirrored_value() + 1));
+        
+        
+        if(reg_block.STATUS.RX_LVL.get_mirrored_value() == rx_fifo.size()) begin
+          set_rx_fifo_full();
+        
+      end
+
+endfunction
+
+  
+protected virtual task push_to_rx_fifo(sv_md_item_mon item);
+  rx_fifo.put(item);
+
+  inc_rx_level();
+
+  `uvm_info("DEBUG" , $sformatf("RX FIFO push- new level : %0d , Pushed entry : %0s",reg_block.STATUS.RX_LVL.get_mirrored_value(),
+                                              item.convert2string()),UVM_NONE);
+
+  port_out_rx.write(SV_MD_OKAY);
+endtask
+
+local function push_to_rx_fifo_nb(sv_md_item_mon item);
+
+if(process_push_to_rx_fifo != null) begin
+  `uvm_fatal("ALGORITHM_ISSUE","cannot start two instances of push_to_rx_fifo() task")
+end
+
+fork 
+  begin
+    process_push_to_rx_fifo  = process::self();
+
+    push_to_rx_fifo(item);
+
+    process_push_to_rx_fifo = null;
+  end
+join_none
+endfunction
+
+
 virtual function void write_in_rx(sv_md_item_mon item_mon);
 
 //`uvm_info("DEBUG", $sformatf("Model received information from RX agent : %0s",item.convert2string()),UVM_NONE);
 
 if(item_mon.is_active()) begin
-sv_md_response exp_response = get_exp_response(item);
+sv_md_response exp_response = get_exp_response(item_mon);
 
 case(exp_response)
    SV_MD_ERR : begin
@@ -145,7 +220,7 @@ case(exp_response)
    end
 
    SV_MD_OKAY : begin
-    // to be filled
+    push_to_rx_fifo_nb(item_mon)
    end
    default : begin
     `uvm_fatal("DEBUG", $sformatf("Unsupported value for response : %0s",exp_response.name()),UVM_NONE);
