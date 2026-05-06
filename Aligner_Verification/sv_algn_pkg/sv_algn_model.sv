@@ -112,7 +112,7 @@ virtual function void set_max_drop();
 
 endfunction
 
-virtual function void inc_cnt_drop();
+virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
   
       if(reg_block.STATUS.CNT_DROP.get_mirrored_value() < max_value) begin
@@ -130,7 +130,29 @@ uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
 
 endfunction
   
-virtual function void write_in_rx(sv_md_item_mon item);
+virtual function void write_in_rx(sv_md_item_mon item_mon);
+
+//`uvm_info("DEBUG", $sformatf("Model received information from RX agent : %0s",item.convert2string()),UVM_NONE);
+
+if(item_mon.is_active()) begin
+sv_md_response exp_response = get_exp_response(item);
+
+case(exp_response)
+   SV_MD_ERR : begin
+    inc_cnt_drop(exp_response);
+
+    port_out_rx.write(exp_response); //informing the scoreboard
+   end
+
+   SV_MD_OKAY : begin
+    // to be filled
+   end
+   default : begin
+    `uvm_fatal("DEBUG", $sformatf("Unsupported value for response : %0s",exp_response.name()),UVM_NONE);
+   end
+endcase
+
+end
 
 endfunction
 
