@@ -15,7 +15,7 @@ package sv_algn_pkg;
  import sv_md_pkg::*;
  import sv_algn_reg_pkg::*;
 
- 
+ `include "sv_algn_types.sv"
  `include "sv_algn_env_config.sv"
  `include "sv_algn_env.sv"
  `include "sv_algn_model.sv"

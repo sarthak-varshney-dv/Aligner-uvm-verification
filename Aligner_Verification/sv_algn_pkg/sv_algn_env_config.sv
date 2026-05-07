@@ -5,6 +5,9 @@ class sv_algn_env_config extends uvm_component ;
 
 local int unsigned algn_data_width ;      //md interface width will be passed in the env build phase
 
+//virtual interface
+protected sv_algn_vif vif ;
+
 `uvm_component_utils(sv_algn_env_config)
 
 function new(string name= "", uvm_component parent)
@@ -31,6 +34,33 @@ virtual function int unsigned get_algn_data_width();
 return algn_data_width ;
 endfunction
 
+//getter for virtual interface
+virtual function sv_algn_vif get_vif()
+
+   return vif ;
+endfunction
+
+//setter for virtual interface
+virtual function void get_vif(sv_algn_vif value)
+  if(vif == null) begin
+    vif =value;
+  end
+  else begin
+    `uvm_fatal("ALGORITHM_ISSUE","Trying to set algn virtual interface more than once")
+  end
+endfunction
+
+virtual function void start_of_simulation_phase(uvm_phase phase);
+  super.start_of_simulation_phase(phase);
+     
+     if(get_vif() == null) begin
+      `uvm_fatal("ALGORITHM_ISSUE","The aligner virtual interface is not set at \"Start Of Simulation Phase \" phase")
+     end
+     else begin
+      `uvm_info("ALGN_CONFIG","The aligner virtual interface is configured at  \"Start Of Simulation Phase \" phase",UVM_DEBUG)
+     end
+
+endfunction
 
 endclass
  `endif

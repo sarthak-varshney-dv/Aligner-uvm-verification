@@ -34,6 +34,9 @@ module testbench();
 
   //MD TX INTERFACE HANDLE
     sv_md_interface#(32) md_tx_if(.clk(clk)) ;
+
+  //ALGN INTERFACE HANDLE
+    sv_algn_if algn_if(.clk(clk));
   
 
   assign md_rx_if.reset_n = apb_if.preset_n ;
@@ -47,10 +50,12 @@ module testbench();
   uvm_config_db#(virtual sv_apb_interface)::set(null,"uvm_test_top.env.apb_agent","vif",apb_if);
   //when instantiate apb_agent, use name apb_agent 
     
-  uvm_config_db#(virtual md_rx_if#(32))::set(null,"uvm_test_top.env.md_rx_agent","vif",md_rx_if);
+  uvm_config_db#(virtual sv_md_interface#(32))::set(null,"uvm_test_top.env.md_rx_agent","vif",md_rx_if);
 
-  uvm_config_db#(virtual md_tx_if#(32))::set(null,"uvm_test_top.env.md_tx_agent","vif",md_tx_if);
+  uvm_config_db#(virtual sv_md_interface#(32))::set(null,"uvm_test_top.env.md_tx_agent","vif",md_tx_if);
     
+  uvm_config_db#(virtual  sv_algn_if)::set(null,"uvm_test_top.env","vif", algn_if);
+
     run_test("  ");
   end
   

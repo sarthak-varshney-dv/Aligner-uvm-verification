@@ -38,6 +38,13 @@ class sv_algn_env extends uvm_env;
 
   virtual function void connect_phase(uvm_phase phase);
   super.connect_phase(phase);
+
+   //interface 
+   sv_algn_vif vif ;
+
+   if(uvm_config_db#(sv_algn_vif)::get(this,"","vif",vif) ==0) begin
+    `uvm_fatal("NO_VIF","could not get the virtual interface from database ")
+   end
   
   sv_apb_reg_adapter adapter= sv_apb_reg_adapter::type_id::create("adapter");;
 
