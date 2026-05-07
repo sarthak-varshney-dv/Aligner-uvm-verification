@@ -31,6 +31,8 @@ local process process_push_to_rx_fifo ;
 
 protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
 
+// intermediate buffer containing information ready to be aligned 
+protected sv_md_item_mon buffer[$];
 
 `uvm_component_utils(sv_algn_model)
 
@@ -145,6 +147,21 @@ virtual function void set_rx_fifo_full();
 
 endfunction
 
+virtual function void set_rx_fifo_empty();
+
+  void'(reg_block.IRO.RX_FIFO_EMPTY.predict(1));
+
+  
+      `uvm_info("RX_FIFO_EMPTY", $sformatf("Rx FiFO reached min value - %0s: %0d",
+                                   reg_block.IRQEN.RX_FIFO_EMPTY.get_full_name(),
+                                      reg_block.IRQEN.RX_FIFO_EMPTY.get_mirrored_value()), UVM_MEDIUM)
+      
+      if(reg_block.IRQEN.RX_FIFO_EMPTY.get_mirrored_value() == 1) begin
+        exp_irq = 1;
+      end
+
+endfunction
+
 virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
   
@@ -175,7 +192,22 @@ virtual function void inc_rx_level();
 
 endfunction
 
+virtual function void dec_rx_level();
   
+        void'(reg_block.STATUS.RX_LVL.predict(reg_block.STATUS.RX_LVL.get_mirrored_value() - 1));
+        
+        
+        if(reg_block.STATUS.RX_LVL.get_mirrored_value() == 0) begin
+          set_rx_fifo_empty();
+        
+      end
+
+endfunction
+  
+virtual
+
+
+
 protected virtual task push_to_rx_fifo(sv_md_item_mon item);
   rx_fifo.put(item);
 
