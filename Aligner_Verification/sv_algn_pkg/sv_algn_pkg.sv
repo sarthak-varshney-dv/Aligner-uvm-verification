@@ -5,6 +5,7 @@
 `include "sv_apb_pkg.sv"
 `include "sv_md_pkg.sv"
 `include "sv_algn_reg_pkg.sv"
+`include "sv_algn_if.sv"
 
 
 package sv_algn_pkg;
