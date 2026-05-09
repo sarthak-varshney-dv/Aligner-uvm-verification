@@ -65,6 +65,8 @@ reg_block.build();
 reg_block.lock_model();
 
  rx_fifo = new("rx_fifo",this,8);
+ tx_fifo = new("tx_fifo",this,8);
+
 
 end
 endfunction
@@ -100,14 +102,14 @@ virtual function void handle_reset(uvm_phase phase);
     reg_block.handle_reset("HARD");
 
     rx_fifo.flush();
+    tx_fifo.flush();
+    buffer = {};
 
     kill_process(process_push_to_rx_fifo);
     kill_process(process_build_buffer);
     kill_process(process_align);
 
 
-
-    buffer = {};
     build_buffer_nb();
     align_nb();
 
@@ -307,6 +309,7 @@ protected virtual task align () ;
   uvm_reg_data_t ctrl_offset = reg_block.CTRL.OFFSET.get_mirrored_value();
 
   uvm_wait_for_nba_region();
+  
  if(ctrl_size <= (buffer.sum() with item.data.size())) begin
   while(ctrl_size <= (buffer.sum() with item.data.size() )) begin
     sv_md_item_mon tx_item = sv_md_item_mon::type_id::create("tx_item",this);
@@ -359,14 +362,14 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
       splitted_item.offset = item.offset ;
 
       
-      for(i=0 ; i<num_bytes;i++) begin
-        splitted_item.data.push_back(item.data[i]);
+      for(int j=0 ; j<num_bytes;j++) begin
+        splitted_item.data.push_back(item.data[j]);
       end
     end
     else begin
       splitted_item.offset = item.offset + num_bytes ;
 
-      for(j=num_bytes ; j<item.data.size();j++) begin
+      for(int j=num_bytes ; j<item.data.size();j++) begin
         splitted_item.data.push_back(item.data[j]);
       end
       
