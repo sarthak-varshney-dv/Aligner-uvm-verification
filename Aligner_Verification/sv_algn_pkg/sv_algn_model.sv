@@ -31,7 +31,12 @@ local process process_push_to_rx_fifo ;
 
 local process process_build_buffer ;
 
+local process process_align ;
+
 protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
+
+protected uvm_tlm_fifo#(sv_md_item_mon) tx_fifo ;
+
 
 // intermediate buffer containing information ready to be aligned 
 protected sv_md_item_mon buffer[$];
@@ -98,11 +103,13 @@ virtual function void handle_reset(uvm_phase phase);
 
     kill_process(process_push_to_rx_fifo);
     kill_process(process_build_buffer);
+    kill_process(process_align);
 
 
 
     buffer = {};
     build_buffer_nb();
+    align_nb();
 
   endfunction
 
@@ -170,6 +177,21 @@ virtual function void set_rx_fifo_empty();
 
 endfunction
 
+virtual function void set_tx_fifo_full();
+
+  void'(reg_block.IRO.TX_FIFO_FULL.predict(1));
+
+  
+      `uvm_info("TX_FIFO_FULL", $sformatf("Tx FiFO became full - %0s: %0d",
+                                   reg_block.IRQEN.TX_FIFO_FULL.get_full_name(),
+                                      reg_block.IRQEN.TX_FIFO_FULL.get_mirrored_value()), UVM_NONE)
+      
+      if(reg_block.IRQEN.TX_FIFO_FULL.get_mirrored_value() == 1) begin
+        exp_irq = 1;
+      end
+
+endfunction
+
 virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
   
@@ -212,6 +234,17 @@ virtual function void dec_rx_level();
 
 endfunction
   
+virtual function void inc_tx_level();
+  
+        void'(reg_block.STATUS.TX_LVL.predict(reg_block.STATUS.TX_LVL.get_mirrored_value() + 1));
+        
+        
+        if(reg_block.STATUS.TX_LVL.get_mirrored_value() == tx_fifo.size()) begin
+          set_tx_fifo_full();
+        
+      end
+
+endfunction  
 
 protected virtual task push_to_rx_fifo(sv_md_item_mon item);
   rx_fifo.put(item);
@@ -233,6 +266,17 @@ protected virtual task pop_from_rx_fifo(ref sv_md_item_mon item);
                                               item.convert2string()),UVM_NONE);
 
 endtask
+
+protected virtual task push_to_tx_fifo(sv_md_item_mon item);
+  tx_fifo.put(item);
+
+  inc_tx_level();
+
+  `uvm_info("DEBUG" , $sformatf("TX FIFO push- new level : %0d , Pushed entry : %0s",reg_block.STATUS.TX_LVL.get_mirrored_value(),
+                                              item.convert2string()),UVM_NONE);
+
+endtask
+
 
 //Task to build the intermediate buffer 
 protected virtual task build_buffer();
@@ -337,7 +381,7 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
       if(!item.is_active()) begin
         void'(splitted_item.end_tr(item.get_end_tr()));    
       end
-      
+
       items.push_back(splitted_item) ;
    end
 
@@ -374,6 +418,23 @@ fork
     build_buffer();
 
     process_build_buffer = null;
+  end
+join_none
+endfunction
+
+local virtual function align_nb();
+
+if(process_align != null) begin
+  `uvm_fatal("ALGORITHM_ISSUE","cannot start two instances of process_align() task")
+end
+
+fork 
+  begin
+    process_align  = process::self();
+
+    align();
+
+    process_align = null;
   end
 join_none
 endfunction
