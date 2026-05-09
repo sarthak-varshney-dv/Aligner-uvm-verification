@@ -255,6 +255,94 @@ protected virtual task build_buffer();
   end
 endtask
 
+protected virtual task align () ;
+  sv_algn_vif vif= agent_config.get_vif();
+  
+  forever begin
+  uvm_reg_data_t ctrl_size = reg_block.CTRL.SIZE.get_mirrored_value();
+  uvm_reg_data_t ctrl_offset = reg_block.CTRL.OFFSET.get_mirrored_value();
+
+  uvm_wait_for_nba_region();
+ if(ctrl_size <= (buffer.sum() with item.data.size())) begin
+  while(ctrl_size <= (buffer.sum() with item.data.size() )) begin
+    sv_md_item_mon tx_item = sv_md_item_mon::type_id::create("tx_item",this);
+
+    tx_item.offset = ctrl_offset ;
+
+    void'(tx_item.begin_tr(buffer[0].get_begin_tr()));
+
+    while(tx_item.data.size() != ctrl_size) begin
+      sv_md_item_mon buffer_item = buffer.pop_front();
+
+      if(tx_item.data.size() + buffer_item.data.size() <= ctrl_size) begin
+        foreach buffer_item.data[idx] begin
+         tx_item.data.push_back(buffer_item.data[idx]) ;
+        end
+      
+      if(tx_item.data.size() == ctrl_size) begin
+        
+        void'(tx_item.end_tr(buffer_item.get_end_time()));
+
+        push_to_tx_fifo(tx_item);
+      end
+      end
+    else begin      //if we need to split the item
+      int unsigned num_bytes_needed = ctrl_size - tx_item.size();
+      sv_md_item_mon splitted_items[$];
+
+      split(num_bytes_needed,buffer_item,splitted_items);
+      buffer.push_back(splitted_items[1]);
+      buffer.push_back(splitted_items[0]);
+    end
+    end
+  end
+  end
+  else begin
+    @(posedge vif.clk);
+  end
+  end
+endtask
+
+protected virtual function void split(int unsigned num_bytes , sv_md_item_mon item , ref sv_md_item_mon items[$]);
+   if(num_bytes ==0 || num_bytes >= item.data.size()) begin
+    `uvm_fatal("ALGORITHM_ISSUE","cannot split the item : invalid num_bytes_needed value")
+   end
+
+   for(int i=0 ; i<2 ; i++) begin
+    sv_md_item_mon splitted_item = sv_md_item_mon::type_id::create("splitted_item",this);
+
+    if(i == 0) begin
+      splitted_item.offset = item.offset ;
+
+      
+      for(i=0 ; i<num_bytes;i++) begin
+        splitted_item.data.push_back(item.data[i]);
+      end
+    end
+    else begin
+      splitted_item.offset = item.offset + num_bytes ;
+
+      for(j=num_bytes ; j<item.data.size();j++) begin
+        splitted_item.data.push_back(item.data[j]);
+      end
+      
+    end
+
+      splitted_item.prev_item_delay = item.prev_item_delay ; 
+      splitted_item.length = item.length ; 
+      splitted_item.response = item.response ; 
+     
+      void'(splitted_item.begin_tr(item.get_begin_tr()));    
+
+      if(!item.is_active()) begin
+        void'(splitted_item.end_tr(item.get_end_tr()));    
+      end
+      
+      items.push_back(splitted_item) ;
+   end
+
+
+endfunction
 
 local virtual function push_to_rx_fifo_nb(sv_md_item_mon item);
 
