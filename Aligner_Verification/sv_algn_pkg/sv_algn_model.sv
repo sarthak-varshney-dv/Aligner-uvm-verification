@@ -33,9 +33,14 @@ local process process_build_buffer ;
 
 local process process_align ;
 
+local process process_tx_ctrl ;
+
+
 protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
 
 protected uvm_tlm_fifo#(sv_md_item_mon) tx_fifo ;
+
+protected uvm_event tx_complete ;
 
 
 // intermediate buffer containing information ready to be aligned 
@@ -52,6 +57,11 @@ function new(string name = "",uvm_component parent);
   port_out_tx  = new("port_out_tx",this);
   port_out_irq = new("port_out_irq",this);
 
+  rx_fifo     = new("rx_fifo",this,8);
+  tx_fifo     = new("tx_fifo",this,8);
+
+  tx_complete = new ("tx_complete");
+
 endfunction
 
 virtual function void build_phase(uvm_phase phase);
@@ -63,10 +73,6 @@ if(reg_block == null) begin
     
 reg_block.build();
 reg_block.lock_model();
-
- rx_fifo = new("rx_fifo",this,8);
- tx_fifo = new("tx_fifo",this,8);
-
 
 end
 endfunction
@@ -108,11 +114,13 @@ virtual function void handle_reset(uvm_phase phase);
     kill_process(process_push_to_rx_fifo);
     kill_process(process_build_buffer);
     kill_process(process_align);
-
+    kill_process(process_tx_ctrl);
+    
+    tx_complete.reset();
 
     build_buffer_nb();
     align_nb();
-
+    tx_ctrl_nb();
   endfunction
 
 virtual function sv_md_response get_exp_response(sv_md_item_mon item);
@@ -194,6 +202,21 @@ virtual function void set_tx_fifo_full();
 
 endfunction
 
+virtual function void set_tx_fifo_empty();
+
+  void'(reg_block.IRO.TX_FIFO_EMPTY.predict(1));
+
+  
+      `uvm_info("TX_FIFO_EMPTY", $sformatf("Tx FiFO became empty - %0s: %0d",
+                                   reg_block.IRQEN.TX_FIFO_EMPTY.get_full_name(),
+                                      reg_block.IRQEN.TX_FIFO_EMPTY.get_mirrored_value()), UVM_NONE)
+      
+      if(reg_block.IRQEN.TX_FIFO_EMPTY.get_mirrored_value() == 1) begin
+        exp_irq = 1;
+      end
+
+endfunction
+
 virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
   
@@ -248,6 +271,19 @@ virtual function void inc_tx_level();
 
 endfunction  
 
+virtual function void dec_tx_level();
+  
+        void'(reg_block.STATUS.TX_LVL.predict(reg_block.STATUS.TX_LVL.get_mirrored_value() - 1));
+        
+        
+        if(reg_block.STATUS.TX_LVL.get_mirrored_value() == 0) begin
+          set_tx_fifo_empty();
+        
+      end
+
+endfunction
+
+
 protected virtual task push_to_rx_fifo(sv_md_item_mon item);
   rx_fifo.put(item);
 
@@ -275,6 +311,16 @@ protected virtual task push_to_tx_fifo(sv_md_item_mon item);
   inc_tx_level();
 
   `uvm_info("DEBUG" , $sformatf("TX FIFO push- new level : %0d , Pushed entry : %0s",reg_block.STATUS.TX_LVL.get_mirrored_value(),
+                                              item.convert2string()),UVM_NONE);
+
+endtask
+
+protected virtual task pop_from_tx_fifo(ref sv_md_item_mon item);
+  tx_fifo.get(item);
+
+  dec_tx_level();
+
+  `uvm_info("DEBUG" , $sformatf("TX FIFO pop- new level : %0d , Popped entry : %0s",reg_block.STATUS.TX_LVL.get_mirrored_value(),
                                               item.convert2string()),UVM_NONE);
 
 endtask
@@ -391,6 +437,19 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
 
 endfunction
 
+protected virtual task tx_ctrl();
+
+sv_md_item_mon item;
+   forever begin
+       pop_from_tx_fifo(item);
+       
+       port_out_tx.write(item);
+
+       tx_complete.wait_trigger();
+   end
+
+endtask
+
 local virtual function push_to_rx_fifo_nb(sv_md_item_mon item);
 
 if(process_push_to_rx_fifo != null) begin
@@ -442,6 +501,23 @@ fork
 join_none
 endfunction
 
+local virtual function tx_ctrl_nb();
+
+if(process_tx_ctrl != null) begin
+  `uvm_fatal("ALGORITHM_ISSUE","cannot start two instances of process_tx_ctrl() task")
+end
+
+fork 
+  begin
+    process_tx_ctrl  = process::self();
+
+    tx_ctrl();
+
+    process_tx_ctrl = null;
+  end
+join_none
+endfunction
+
 
 
 virtual function void write_in_rx(sv_md_item_mon item_mon);
@@ -470,7 +546,10 @@ end
 
 endfunction
 
-virtual function void write_in_tx(sv_md_item_mon item);
+virtual function void write_in_tx(sv_md_item_mon item_mon);
+if(!item_mon.is_active()) begin
+  tx_complete.trigger();
+end
 
 endfunction
 
