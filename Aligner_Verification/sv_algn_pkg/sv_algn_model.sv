@@ -122,7 +122,7 @@ virtual function void handle_reset(uvm_phase phase);
     align_nb();
     tx_ctrl_nb();
   endfunction
-  
+
 
 virtual function sv_md_response get_exp_response(sv_md_item_mon item);
     if(item.data.size() == 0) begin
@@ -363,7 +363,7 @@ protected virtual task align () ;
 
     tx_item.offset = ctrl_offset ;
 
-    void'(tx_item.begin_tr(buffer[0].get_begin_tr()));
+    void'(tx_item.begin_tr(buffer[0].get_begin_time()));
 
     while(tx_item.data.size() != ctrl_size) begin
       sv_md_item_mon buffer_item = buffer.pop_front();
@@ -426,10 +426,10 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
       splitted_item.length = item.length ; 
       splitted_item.response = item.response ; 
      
-      void'(splitted_item.begin_tr(item.get_begin_tr()));    
+      void'(splitted_item.begin_tr(item.get_begin_time()));    
 
       if(!item.is_active()) begin
-        void'(splitted_item.end_tr(item.get_end_tr()));    
+        void'(splitted_item.end_tr(item.get_end_time()));    
       end
 
       items.push_back(splitted_item) ;
