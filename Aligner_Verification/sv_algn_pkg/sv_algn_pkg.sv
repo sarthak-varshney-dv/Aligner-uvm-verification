@@ -22,6 +22,8 @@ package sv_algn_pkg;
  `include "sv_algn_reg_predictor.sv"
  `include "sv_algn_reset_handler.sv"
  `include "sv_algn_clr_cnt_drop.sv"
+ `include "sv_algn_scoreboard.sv"
+
 
 
 endpackage
