@@ -3,15 +3,19 @@
 
 class sv_algn_env_config extends uvm_component ;
 
-local int unsigned algn_data_width ;      //md interface width will be passed in the env build phase
+local int unsigned algn_data_width ;      //md interface width will be set in the env build phase
 
 //virtual interface
 protected sv_algn_vif vif ;
 
+local int unsigned exp_rx_response_threshold ;
+
 `uvm_component_utils(sv_algn_env_config)
 
 function new(string name= "", uvm_component parent)
-  super.new(name,parent)
+  super.new(name,parent);
+
+  exp_rx_response_threshold=10 ;
 endfunction
 
 virtual function void set_algn_data_width(int unsigned value);
@@ -35,19 +39,32 @@ return algn_data_width ;
 endfunction
 
 //getter for virtual interface
-virtual function sv_algn_vif get_vif()
+virtual function sv_algn_vif get_vif();
 
    return vif ;
 endfunction
 
 //setter for virtual interface
-virtual function void get_vif(sv_algn_vif value)
+virtual function void get_vif(sv_algn_vif value);
   if(vif == null) begin
     vif =value;
   end
   else begin
     `uvm_fatal("ALGORITHM_ISSUE","Trying to set algn virtual interface more than once")
   end
+endfunction
+
+//getter for exp_rx_response_threshold
+virtual function int unsigned get_exp_rx_response_threshold();
+
+   return exp_rx_response_threshold ;
+endfunction
+
+//setter for exp_rx_response_threshold
+virtual function void get_exp_rx_response_threshold(int unsigned value);
+  
+    exp_rx_response_threshold =value;
+  
 endfunction
 
 virtual function void start_of_simulation_phase(uvm_phase phase);
