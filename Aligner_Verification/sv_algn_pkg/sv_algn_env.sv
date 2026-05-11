@@ -12,6 +12,8 @@ class sv_algn_env extends uvm_env;
   sv_algn_reg_predictor#(sv_apb_item_mon) predictor ;
 
   sv_algn_env_config env_config ;
+
+  sv_algn_scoreboard scoreboard ;
   
   `uvm_component_utils(sv_algn_env)
   
@@ -33,6 +35,8 @@ class sv_algn_env extends uvm_env;
     md_tx_agent= sv_md_agent_slave#(32)::type_id::create("md_tx_agent",this);
 
     predictor = sv_algn_reg_predictor#(sv_apb_item_mon)::type_id::create("predictor",this);
+
+    scoreboard= sv_algn_scoreboard::type_id::create("scoreboard",this);
 
   endfunction
 
@@ -71,6 +75,13 @@ class sv_algn_env extends uvm_env;
 
   md_tx_agent.monitor.output_port.connect(model.port_in_tx);
 
+ //scoreboard connections
+
+    md_rx_agent.monitor.output_port.connect(scoreboard.port_in_agnet_rx);
+    md_tx_agent.monitor.output_port.connect(scoreboard.port_in_agent_tx);
+    model.port_out_rx,connect(scoreboard.port_in_model_rx);
+    model.port_out_tx,connect(scoreboard.port_in_model_tx);
+    model.port_out_irq,connect(scoreboard.port_in_model_irq);
 
   endfunction
   
