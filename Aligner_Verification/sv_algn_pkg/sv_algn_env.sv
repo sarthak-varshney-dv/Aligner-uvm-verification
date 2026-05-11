@@ -83,6 +83,8 @@ class sv_algn_env extends uvm_env;
     model.port_out_tx,connect(scoreboard.port_in_model_tx);
     model.port_out_irq,connect(scoreboard.port_in_model_irq);
 
+    scoreboard.env_config = env_config;
+
   endfunction
   
   virtual function void handle_reset(uvm_phase phase);
