@@ -10,12 +10,17 @@ protected sv_algn_vif vif ;
 
 local int unsigned exp_rx_response_threshold ;
 
+local int unsigned exp_tx_item_threshold ;
+
+
 `uvm_component_utils(sv_algn_env_config)
 
 function new(string name= "", uvm_component parent)
   super.new(name,parent);
 
   exp_rx_response_threshold=10 ;
+
+  exp_tx_item_threshold=10;
 endfunction
 
 virtual function void set_algn_data_width(int unsigned value);
@@ -64,6 +69,19 @@ endfunction
 virtual function void get_exp_rx_response_threshold(int unsigned value);
   
     exp_rx_response_threshold =value;
+  
+endfunction
+
+//getter for exp_tx_item_threshold
+virtual function int unsigned get_exp_tx_item_threshold();
+
+   return exp_tx_item_threshold ;
+endfunction
+
+//setter for exp_tx_item_threshold
+virtual function void get_exp_tx_item_threshold(int unsigned value);
+  
+    exp_tx_item_threshold =value;
   
 endfunction
 

@@ -17,9 +17,15 @@
   
   //queue to store Expected rx_item respomses
   protected sv_md_response exp_rx_responses[$];
+
+  //queue to store Expected tx_item respomses
+  protected sv_md_item_mon exp_tx_items[$];
  
   //queue of process pointers
-  local process process_exp_response_watchdog[$];
+  local process process_exp_rx_response_watchdog[$];
+
+  local process process_exp_tx_item_watchdog[$];
+
 
   sv_algn_env_config env_config ;
    
@@ -39,8 +45,11 @@
    virtual function void handle_reset(uvm_phase phase);
 
    exp_rx_responses.delete();
+   exp_tx_items.delete();
 
-   kill_processes_from_queue(process_exp_response_watchdog);
+   kill_processes_from_queue(process_exp_rx_response_watchdog);
+   kill_processes_from_queue(process_exp_tx_item_watchdog);
+
    endfunction
 
    //function to kill all processes in a queue
@@ -60,12 +69,21 @@
    end
    
    //if everything is alright ,push the response and start the task
-   exp_rx_responses.put(response);
+   exp_rx_responses.push_back(response);
    exp_rx_response_watchdog_nb(response);
      
    endfunction
      
     virtual function void write_port_in_model_tx(sv_md_item_mon item_mon);
+    if(exp_rx_responses.size()>=1) begin
+    `uvm_error("ALGORITHM ISSUE",$sformatf("Something went wrong as there are %0d entries in exp_tx_items queue and just received one more",exp_rx_responses.size()))
+   end
+   
+   //if everything is alright ,push the response and start the task
+   exp_tx_items.push_back(item_mon);
+   exp_tx_item_watchdog_nb(item_mon);
+     
+    
    endfunction
 
     virtual function void write_port_in_model_irq(bit irq);
@@ -75,12 +93,12 @@
       if(!item_mon.is_active()) begin
         sv_md_response exp_response = exp_rx_responses.pop_front();
 
-      process_exp_response_watchdog[0].kill();
+      process_exp_rx_response_watchdog[0].kill();
 
-      void'(process_exp_response_watchdog.pop_front());
+      void'(process_exp_rx_response_watchdog.pop_front());
 
       if(item_mon.response != exp_response) begin
-        `uvm_error("DUT_ERROR" , $sformatf("Mismatch detectedvfor the RX response -> expected: %0s ,received: %0s , item: %0s",exp_response.name(),item_mon.response.name(),item_mon.convert2string()))
+        `uvm_error("DUT_ERROR" , $sformatf("Mismatch detected for the RX response -> expected: %0s ,received: %0s , item: %0s",exp_response.name(),item_mon.response.name(),item_mon.convert2string()))
       end
 
       end
@@ -88,6 +106,23 @@
    endfunction
 
     virtual function void write_port_in_agent_tx(sv_md_item_mon item_mon);
+      if(!item_mon.is_active()) begin
+        sv_md_item_mon exp_item = exp_tx_items.pop_front();
+
+      process_exp_rx_response_watchdog[0].kill();
+
+      void'(process_exp_tx_item_watchdog.pop_front());
+      
+      //check data and size
+      if(item_mon.data != exp_item.data) begin
+        `uvm_error("DUT_ERROR" , $sformatf("Mismatch detected for the tX item -> expected: %0s ,received: %0s ",exp_item.convert2string(),item_mon.convert2string()))
+      end
+         //check offset
+      if(item_mon.offset != exp_item.offset) begin
+        `uvm_error("DUT_ERROR" , $sformatf("Mismatch detected for the tX item -> expected: %0s ,received: %0s ",exp_item.convert2string(),item_mon.convert2string()))
+      end
+
+      end
    endfunction
 
   protected virtual task exp_rx_response_watchdog(sv_md_response response);
@@ -108,11 +143,40 @@
        
        process p = process::self();
 
-       process_exp_response_watchdog.push_back(p);
+       process_exp_rx_response_watchdog.push_back(p);
 
        exp_rx_response_watchdog(response);
 
-       void'(process_exp_response_watchdog.pop_front());
+       void'(process_exp_rx_response_watchdog.pop_front());
+
+    end 
+    join_none
+
+   endfunction
+
+    protected virtual task exp_tx_item_watchdog(sv_md_item_mon item);
+     sv_algn_vif vif = env_config.get_vif();
+     int unsigned threshold = env_config.get_exp_tx_item_threshold();
+     time start_time =$time();
+
+     repeat(threshold) begin
+      @(posedge vif.clk);
+     end
+      //if control is able to come out of repeat loop implies error 
+     `uvm_error("DUT_ERROR",$sformatf("The tx item, with value %0s , expectedfrom time %0t , was not received after %0d clock cycles",item.convert2string(),start_time,threshold))
+  endtask
+
+   protected virtual function void exp_tx_item_watchdog_nb(sv_md_item_mon item);
+    
+    fork begin
+       
+       process p = process::self();
+
+       process_exp_tx_item_watchdog.push_back(p);
+
+       exp_rx_response_watchdog(item);
+
+       void'(process_exp_tx_item_watchdog.pop_front());
 
     end 
     join_none
