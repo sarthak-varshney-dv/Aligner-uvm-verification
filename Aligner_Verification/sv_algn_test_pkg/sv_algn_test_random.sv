@@ -11,6 +11,7 @@ class sv_algn_test_random extends sv_algn_test_base;
    endfunction
   
   virtual task run_phase(uvm_phase phase);
+  uvm_status_e status;
  
   phase.raise_objection(this."test_done");
 
@@ -24,6 +25,12 @@ fork    //for starting slave_response_forever in the background
             seq_response.start(env.md_tx_agent.sequencer) ;
     end
 join_none
+
+  //to enable all the interrupts as at reset all become zero
+  env.model.reg_block.IRQEN.write(status,5'b11111);
+
+  void'(env.model.reg_block.CTRL.randomize());
+  env.model.reg_block.CTRL.update(status);
    begin
        repeat(10) begin
       sv_md_sequence_simple_master seq= sv_md_sequence_base_master::type_id::create("seq");
