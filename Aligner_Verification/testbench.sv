@@ -41,6 +41,8 @@ module testbench();
 
   assign md_rx_if.reset_n = apb_if.preset_n ;
   assign md_tx_if.reset_n = apb_if.preset_n ;
+  assign algn_if.reset_n = apb_if.preset_n ;
+
   
   initial begin
     $dumpfile("dump.vcd");
@@ -84,7 +86,9 @@ module testbench();
     .md_tx_size(md_tx_if.size),
     .md_tx_data(md_tx_if.data),
     .md_tx_offset(md_tx_if.offset),
-    .md_tx_err(md_tx_if.err)
+    .md_tx_err(md_tx_if.err),
+
+    .irq(algn_if.irq)
   );
   
   
