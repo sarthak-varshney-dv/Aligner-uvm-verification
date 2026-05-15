@@ -123,6 +123,11 @@ virtual function void handle_reset(uvm_phase phase);
     kill_process(process_build_buffer);
     kill_process(process_align);
     kill_process(process_tx_ctrl);
+
+    kill_process(process_set_rx_fifo_empty);
+    kill_process(process_set_rx_fifo_full);
+    kill_process(process_set_tx_fifo_empty);
+    kill_process(process_set_tx_fifo_full);
     
     tx_complete.reset();
 
@@ -186,6 +191,9 @@ fork
       if(reg_block.IRQEN.RX_FIFO_FULL.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+
+      process_set_rx_fifo_full = null;
+
   end
 join_none  
 
@@ -210,6 +218,9 @@ fork
       if(reg_block.IRQEN.RX_FIFO_EMPTY.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+
+      process_set_rx_fifo_empty = null;
+
   end
 join_none     
 
@@ -234,6 +245,9 @@ virtual function void set_tx_fifo_full();
       if(reg_block.IRQEN.TX_FIFO_FULL.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+
+      process_set_tx_fifo_full = null;
+
   end
  join_none      
 
@@ -258,6 +272,7 @@ virtual function void set_tx_fifo_empty();
       if(reg_block.IRQEN.TX_FIFO_EMPTY.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+      process_set_tx_fifo_empty = null;
   end
  join_none     
 
