@@ -36,12 +36,20 @@ local process process_align ;
 local process process_tx_ctrl ;
 
 
+local process process_set_rx_fifo_empty ;
+
+local process process_set_rx_fifo_full ;
+
+local process process_set_tx_fifo_empty ;
+
+local process process_set_tx_fifo_full ;
+
+
 protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
 
 protected uvm_tlm_fifo#(sv_md_item_mon) tx_fifo ;
 
 protected uvm_event tx_complete ;
-
 
 // intermediate buffer containing information ready to be aligned 
 protected sv_md_item_mon buffer[$];
@@ -160,6 +168,14 @@ endfunction
 
 virtual function void set_rx_fifo_full();
 
+fork 
+  begin
+    process_set_rx_fifo_full=process::self();
+
+    repeat(2) begin
+      uvm_wait_for_nba_region();
+    end
+
   void'(reg_block.IRO.RX_FIFO_FULL.predict(1));
 
   
@@ -170,10 +186,19 @@ virtual function void set_rx_fifo_full();
       if(reg_block.IRQEN.RX_FIFO_FULL.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+  end
+join_none  
 
 endfunction
 
 virtual function void set_rx_fifo_empty();
+fork 
+  begin
+    process_set_rx_fifo_empty=process::self();
+
+    repeat(2) begin
+      uvm_wait_for_nba_region();
+    end
 
   void'(reg_block.IRO.RX_FIFO_EMPTY.predict(1));
 
@@ -185,10 +210,19 @@ virtual function void set_rx_fifo_empty();
       if(reg_block.IRQEN.RX_FIFO_EMPTY.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+  end
+join_none     
 
 endfunction
 
 virtual function void set_tx_fifo_full();
+ fork 
+  begin
+    process_set_tx_fifo_full=process::self();
+
+    repeat(2) begin
+      uvm_wait_for_nba_region();
+    end
 
   void'(reg_block.IRO.TX_FIFO_FULL.predict(1));
 
@@ -200,10 +234,19 @@ virtual function void set_tx_fifo_full();
       if(reg_block.IRQEN.TX_FIFO_FULL.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+  end
+ join_none      
 
 endfunction
 
 virtual function void set_tx_fifo_empty();
+ fork 
+  begin
+    process_set_tx_fifo_empty=process::self();
+
+    repeat(2) begin
+      uvm_wait_for_nba_region();
+    end
 
   void'(reg_block.IRO.TX_FIFO_EMPTY.predict(1));
 
@@ -215,8 +258,43 @@ virtual function void set_tx_fifo_empty();
       if(reg_block.IRQEN.TX_FIFO_EMPTY.get_mirrored_value() == 1) begin
         exp_irq = 1;
       end
+  end
+ join_none     
 
 endfunction
+
+protected virtual function void kill_process_set_rx_fifo_empty();
+   fork
+    uvm_wait_for_nba_region();
+
+    kill_process(process_set_rx_fifo_empty);
+   join_none
+endfunction
+
+protected virtual function void kill_process_set_rx_fifo_full();
+   fork
+    uvm_wait_for_nba_region();
+
+    kill_process(process_set_rx_fifo_full);
+   join_none
+endfunction
+
+protected virtual function void kill_process_set_tx_fifo_empty();
+   fork
+    uvm_wait_for_nba_region();
+
+    kill_process(process_set_tx_fifo_empty);
+   join_none
+endfunction
+
+protected virtual function void kill_process_set_rx_fifo_full();
+   fork
+    uvm_wait_for_nba_region();
+
+    kill_process(process_set_rx_fifo_full);
+   join_none
+endfunction
+
 
 virtual function void inc_cnt_drop(sv_md_response response);
 uvm_reg_data_t max_value = ('h1 << reg_block.STATUS.CNT_DROP.get_n_bits()) - 1;
@@ -288,6 +366,8 @@ endfunction
 protected virtual task push_to_rx_fifo(sv_md_item_mon item);
   rx_fifo.put(item);
 
+  kill_process_set_rx_fifo_empty();
+
   inc_rx_level();
 
   `uvm_info("DEBUG" , $sformatf("RX FIFO push- new level : %0d , Pushed entry : %0s",reg_block.STATUS.RX_LVL.get_mirrored_value(),
@@ -298,6 +378,8 @@ endtask
 
 protected virtual task pop_from_rx_fifo(ref sv_md_item_mon item);
   rx_fifo.get(item);
+  
+  kill_process_set_rx_fifo_full();
 
   dec_rx_level();
 
@@ -309,6 +391,8 @@ endtask
 protected virtual task push_to_tx_fifo(sv_md_item_mon item);
   tx_fifo.put(item);
 
+  kill_process_set_tx_fifo_empty();
+
   inc_tx_level();
 
   `uvm_info("DEBUG" , $sformatf("TX FIFO push- new level : %0d , Pushed entry : %0s",reg_block.STATUS.TX_LVL.get_mirrored_value(),
@@ -318,6 +402,8 @@ endtask
 
 protected virtual task pop_from_tx_fifo(ref sv_md_item_mon item);
   tx_fifo.get(item);
+
+  kill_process_set_tx_fifo_full();
 
   dec_tx_level();
 
