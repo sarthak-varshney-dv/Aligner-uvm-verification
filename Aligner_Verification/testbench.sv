@@ -43,6 +43,11 @@ module testbench();
   assign md_tx_if.reset_n = apb_if.preset_n ;
   assign algn_if.reset_n = apb_if.preset_n ;
 
+  assign algn_if.rx_fifo_push = dut.core.rx_fifo.push_valid & dut.core.rx_fifo.push_ready ;
+  assign algn_if.rx_fifo_pop  = dut.core.rx_fifo.pop_valid  & dut.core.rx_fifo.pop_ready ;
+  assign algn_if.tx_fifo_push = dut.core.tx_fifo.push_valid & dut.core.tx_fifo.push_ready ;
+  assign algn_if.tx_fifo_pop  = dut.core.tx_fifo.pop_valid  & dut.core.tx_fifo.pop_ready ;
+
   
   initial begin
     $dumpfile("dump.vcd");
