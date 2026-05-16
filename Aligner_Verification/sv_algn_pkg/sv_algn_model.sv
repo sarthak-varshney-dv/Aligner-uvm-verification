@@ -421,7 +421,7 @@ protected virtual task sync_pop_from_rx_fifo();
         begin
 
           repeat(10) begin
-          @(posedge vif.clk iff((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) & (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size())));
+          @(posedge vif.clk iff((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) && (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size())));
           end
 
           `uvm_warning("DUT_WARNING","Rx fifo pop did not sync with RTL")
@@ -541,7 +541,7 @@ endtask
 
 protected virtual task pop_from_tx_fifo(ref sv_md_item_mon item);
   sync_pop_from_tx_fifo();
-  
+
   tx_fifo.get(item);
 
   kill_process_set_tx_fifo_full();
