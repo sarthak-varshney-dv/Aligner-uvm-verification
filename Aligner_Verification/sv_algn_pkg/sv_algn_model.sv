@@ -377,8 +377,128 @@ virtual function void dec_tx_level();
 
 endfunction
 
+protected virtual task sync_push_to_rx_fifo();
+  sv_algn_vif vif = env_config.get_vif();
+
+  fork
+    begin
+      fork
+        begin
+
+          @(posedge vif.clk iff(vif.rx_fifo_push));
+          
+        end
+
+        begin
+
+          repeat(10) begin
+          @(posedge vif.clk iff(reg_block.STATUS.RX_LVL.get_mirrored_value() < rx_fifo.size()));
+          end
+
+          `uvm_warning("DUT_WARNING","Rx fifo push did not sync with RTL")
+          
+        end
+      join_any
+
+      disable_fork ;
+    end
+  join
+ 
+endtask
+
+protected virtual task sync_pop_from_rx_fifo();
+  sv_algn_vif vif = env_config.get_vif();
+
+  fork
+    begin
+      fork
+        begin
+
+          @(posedge vif.clk iff(vif.rx_fifo_pop));
+          
+        end
+
+        begin
+
+          repeat(10) begin
+          @(posedge vif.clk iff((reg_block.STATUS.RX_LVL.get_mirrored_value() > 0) & (reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size())));
+          end
+
+          `uvm_warning("DUT_WARNING","Rx fifo pop did not sync with RTL")
+          
+        end
+      join_any
+
+      disable_fork ;
+    end
+  join
+ 
+endtask
+
+protected virtual task sync_push_to_tx_fifo();
+  sv_algn_vif vif = env_config.get_vif();
+
+  fork
+    begin
+      fork
+        begin
+
+          @(posedge vif.clk iff(vif.tx_fifo_push));
+          
+        end
+
+        begin
+
+          repeat(10) begin
+          @(posedge vif.clk iff(reg_block.STATUS.TX_LVL.get_mirrored_value() < tx_fifo.size()));
+          end
+
+          `uvm_warning("DUT_WARNING","Tx fifo push did not sync with RTL")
+          
+        end
+      join_any
+
+      disable_fork ;
+    end
+  join
+ 
+endtask
+
+protected virtual task sync_pop_from_tx_fifo();
+  sv_algn_vif vif = env_config.get_vif();
+
+  fork
+    begin
+      fork
+        begin
+
+          @(posedge vif.clk iff(vif.rx_fifo_pop));
+          
+        end
+
+        begin
+
+          repeat(20) begin
+          @(posedge vif.clk iff((reg_block.STATUS.TX_LVL.get_mirrored_value() > 0) ));
+          end
+
+          `uvm_warning("DUT_WARNING","tx fifo pop did not sync with RTL")
+          
+        end
+      join_any
+
+      disable_fork ;
+    end
+  join
+ 
+endtask
+
+
 
 protected virtual task push_to_rx_fifo(sv_md_item_mon item);
+
+  sync_push_to_rx_fifo();
+
   rx_fifo.put(item);
 
   kill_process_set_rx_fifo_empty();
@@ -392,6 +512,8 @@ protected virtual task push_to_rx_fifo(sv_md_item_mon item);
 endtask
 
 protected virtual task pop_from_rx_fifo(ref sv_md_item_mon item);
+  sync_pop_from_rx_fifo();
+
   rx_fifo.get(item);
   
   kill_process_set_rx_fifo_full();
@@ -404,6 +526,8 @@ protected virtual task pop_from_rx_fifo(ref sv_md_item_mon item);
 endtask
 
 protected virtual task push_to_tx_fifo(sv_md_item_mon item);
+  sync_push_to_tx_fifo();
+
   tx_fifo.put(item);
 
   kill_process_set_tx_fifo_empty();
@@ -416,6 +540,8 @@ protected virtual task push_to_tx_fifo(sv_md_item_mon item);
 endtask
 
 protected virtual task pop_from_tx_fifo(ref sv_md_item_mon item);
+  sync_pop_from_tx_fifo();
+  
   tx_fifo.get(item);
 
   kill_process_set_tx_fifo_full();
