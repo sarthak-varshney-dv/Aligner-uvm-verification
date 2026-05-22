@@ -478,7 +478,7 @@ protected virtual task sync_pop_from_tx_fifo();
 
         begin
 
-          repeat(20) begin
+          repeat(200) begin
           @(posedge vif.clk iff((reg_block.STATUS.TX_LVL.get_mirrored_value() > 0) ));
           end
 
