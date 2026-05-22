@@ -45,6 +45,9 @@ local process process_set_tx_fifo_empty ;
 local process process_set_tx_fifo_full ;
 
 
+local process process_send_exp_irq ;
+
+
 protected uvm_tlm_fifo#(sv_md_item_mon) rx_fifo ;
 
 protected uvm_tlm_fifo#(sv_md_item_mon) tx_fifo ;
@@ -128,12 +131,17 @@ virtual function void handle_reset(uvm_phase phase);
     kill_process(process_set_rx_fifo_full);
     kill_process(process_set_tx_fifo_empty);
     kill_process(process_set_tx_fifo_full);
+
+    kill_process(process_send_exp_irq);
+    exp_irq=0;
+
     
     tx_complete.reset();
 
     build_buffer_nb();
     align_nb();
     tx_ctrl_nb();
+    send_exp_irq_nb();
   endfunction
 
 
@@ -678,6 +686,24 @@ sv_md_item_mon item;
 
 endtask
 
+protected virtual task send_exp_irq();
+
+sv_algn_vif vif = env_config.get_vif();
+
+   forever begin
+       @(negedge vif.clk);
+
+       if(exp_irq == 1) begin
+       port_out_irq.write(exp_irq);
+
+       exp_irq=0;
+        
+       end
+       
+   end
+
+endtask
+
 local virtual function push_to_rx_fifo_nb(sv_md_item_mon item);
 
 if(process_push_to_rx_fifo != null) begin
@@ -742,6 +768,23 @@ fork
     tx_ctrl();
 
     process_tx_ctrl = null;
+  end
+join_none
+endfunction
+
+local virtual function send_exp_irq_nb();
+
+if(process_send_exp_irq != null) begin
+  `uvm_fatal("ALGORITHM_ISSUE","cannot start two instances of process_send_exp_irq() task")
+end
+
+fork 
+  begin
+    process_send_exp_irq  = process::self();
+
+    send_exp_irq();
+
+    process_send_exp_irq = null;
   end
 join_none
 endfunction
