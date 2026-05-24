@@ -6,7 +6,7 @@ A scalable SystemVerilog/UVM verification environment for a configurable data al
 
  <div align="center">
 
-<img src="images/Aligner_DUT_Env_Architecture.png"
+<img src="Images/Aligner_DUT_Env_Architecture.png"
      width="1000"
      style="border-radius:12px;">
 
@@ -41,7 +41,7 @@ The DUT supports:
 
  <div align="center">
 
-<img src="images/DUT_Block_Diagram.png"
+<img src="Images/DUT_Block_Diagram.png"
      width="1000"
      style="border-radius:12px;">
 
