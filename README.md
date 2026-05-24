@@ -4,8 +4,15 @@ A scalable SystemVerilog/UVM verification environment for a configurable data al
 <br>
 <br>
 
+ <div align="center">
 
-![Architecture](Images/Aligner_DUT_Env_Architecture.png)
+<img src="images/Aligner_DUT_Env_Architecture.png"
+     width="1000"
+     style="border-radius:12px;">
+
+</div>
+<br>
+
 
 ## Project Overview
 
@@ -30,9 +37,16 @@ The DUT supports:
 
 
 ## DUT Architecture
+<br>
 
+ <div align="center">
 
-![DUT Block Diagram](Images/DUT_Block_Diagram.png)
+<img src="images/DUT_Block_Diagram.png"
+     width="1000"
+     style="border-radius:12px;">
+
+</div>
+<br>
 
 The DUT consists of:
 
