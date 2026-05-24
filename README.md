@@ -1,8 +1,11 @@
 # UVM Verification of Configurable Data Aligner
 
 A scalable SystemVerilog/UVM verification environment for a configurable data aligner IP featuring reusable APB and custom MD protocol VIPs, predictor , scoreboarding, RAL integration, constrained-random verification, functional coverage, and assertion-based protocol checking.
+<br>
+<br>
 
-!
+
+![Architecture](images/Aligner_DUT_Env_Architecture.png)
 
 ## Project Overview
 
