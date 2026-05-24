@@ -1,3 +1,25 @@
-<H1>UVM Verification of Configurable Data Aligner</h1>
+<H1>UVM Verification of Configurable Data Aligner</H1>
 
-A scalable SystemVerilog/UVM verification environment for a configurable data aligner IP featuring reusable APB and custom MD protocol VIPs, predictor-based scoreboarding, RAL integration, constrained-random verification, functional coverage, and assertion-based protocol checking.
+A scalable SystemVerilog/UVM verification environment for a configurable data aligner IP featuring reusable APB and custom MD protocol VIPs, predictor , scoreboarding, RAL integration, constrained-random verification, functional coverage, and assertion-based protocol checking.
+<BR>
+
+<H3>Project Overview</H3>
+
+The Aligner DUT accepts an unaligned stream of memory data transactions and converts them into aligned output transactions based on programmable configuration registers. The design supports configurable alignment size and offset settings through an APB register interface.
+
+The verification environment was developed using SystemVerilog and UVM with emphasis on:
+
+reusable VIP development
+constrained-random verification
+protocol compliance checking
+scalable UVM architecture
+end-to-end functional correctness
+
+The DUT supports:
+
+APB-based register programming
+Custom MD (Memory Data) streaming protocol
+RX/TX FIFO buffering
+Interrupt generation
+Error detection for illegal transactions
+Flow-control and backpressure handling
