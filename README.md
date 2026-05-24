@@ -5,7 +5,7 @@ A scalable SystemVerilog/UVM verification environment for a configurable data al
 <br>
 
 
-![Architecture](images/Aligner_DUT_Env_Architecture.png)
+![Architecture](Images/Aligner_DUT_Env_Architecture.png)
 
 ## Project Overview
 
