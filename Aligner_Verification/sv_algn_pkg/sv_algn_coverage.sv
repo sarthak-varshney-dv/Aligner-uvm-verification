@@ -42,7 +42,13 @@
     }
 
    cross ctrl_offset,ctrl_size,item_offset,item_size,num_bytes_needed {
-    ignore_bins = 
+    ignore_bins = (binsof ctrl_offset) intersect {0} && (binsof ctrl_size) intersect {3} ||
+                  (binsof ctrl_offset) intersect {1} && (binsof ctrl_size) intersect {2,3,4} ||
+                  (binsof ctrl_offset) intersect {2} && (binsof ctrl_size) intersect {3,4} ||
+                  (binsof ctrl_offset) intersect {3} && (binsof ctrl_size) intersect {2,3,4} ;
+
+                
+                                                       
    }
   endgroup
 
