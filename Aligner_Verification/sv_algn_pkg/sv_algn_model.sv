@@ -24,6 +24,9 @@ uvm_analysis_port#(sv_md_response) port_out_tx ;
 
 uvm_analysis_port#(bit) port_out_irq ;
 
+uvm_analysis_port#(sv_algn_split_info) port_out_split_info ;
+
+
 protected bit exp_irq;
 
 
@@ -67,6 +70,8 @@ function new(string name = "",uvm_component parent);
   port_out_rx  = new("port_out_rx",this);
   port_out_tx  = new("port_out_tx",this);
   port_out_irq = new("port_out_irq",this);
+  
+  port_out_split_info = new("port_out_split_info",this);
 
   rx_fifo     = new("rx_fifo",this,8);
   tx_fifo     = new("tx_fifo",this,8);
@@ -668,6 +673,19 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
       end
 
       items.push_back(splitted_item) ;
+
+      // sendinginfo to coverage
+      begin
+        sv_algn_split_info info = sv_algn_split_info::type_id::create("info");
+
+          info.ctrl_offset = reg_block.CTRL.OFFSET.get_mirrored_value();
+          info.ctrl_size =   reg_block.CTRL.SIZE.get_mirrored_value();
+          info.item_offset = item.offset ;
+          info.item_size  = item.data.size();
+          info.num_bytes_needed = num_bytes ;
+
+          port_out_split_info.write(info);
+      end
    end
 
 

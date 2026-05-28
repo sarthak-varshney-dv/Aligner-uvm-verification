@@ -14,6 +14,8 @@ class sv_algn_env extends uvm_env;
   sv_algn_env_config env_config ;
 
   sv_algn_scoreboard scoreboard ;
+
+  sv_algn_coverage coverage ;
   
   `uvm_component_utils(sv_algn_env)
   
@@ -37,6 +39,10 @@ class sv_algn_env extends uvm_env;
     predictor = sv_algn_reg_predictor#(sv_apb_item_mon)::type_id::create("predictor",this);
 
     scoreboard= sv_algn_scoreboard::type_id::create("scoreboard",this);
+
+    if(env_config.get_has_coverage()) begin
+      coverage = sv_algn_coverage::type_id::create("coverage",this);
+    end
 
   endfunction
 
@@ -84,6 +90,10 @@ class sv_algn_env extends uvm_env;
     model.port_out_irq,connect(scoreboard.port_in_model_irq);
 
     scoreboard.env_config = env_config;
+
+  if(env_config.get_has_coverage()) begin
+    model.port_out_split_info.connect(coverage.port_in_split_info);
+  end  
 
   endfunction
   
