@@ -14,6 +14,7 @@ local int unsigned exp_tx_item_threshold ;
 
 local int unsigned exp_irq_threshold ;
 
+local bit has_coverage ;
 
 
 `uvm_component_utils(sv_algn_env_config)
@@ -24,6 +25,8 @@ function new(string name= "", uvm_component parent)
   exp_rx_response_threshold=10 ;
   exp_tx_item_threshold=10;
   exp_irq_threshold=10 ;
+
+  has_coverage= 1 ;
 endfunction
 
 virtual function void set_algn_data_width(int unsigned value);
@@ -111,6 +114,24 @@ virtual function void start_of_simulation_phase(uvm_phase phase);
       `uvm_info("ALGN_CONFIG","The aligner virtual interface is configured at  \"Start Of Simulation Phase \" phase",UVM_DEBUG)
      end
 
+endfunction
+
+virtual function void set_has_coverage(bit value);
+
+  has_coverage = value ;
+  
+endfunction
+
+virtual function void set_has_coverage(bit value);
+
+  has_coverage = value ;
+  
+endfunction
+
+virtual function bit get_has_coverage();
+
+  return has_coverage ;
+  
 endfunction
 
 endclass
