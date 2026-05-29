@@ -1,7 +1,7 @@
 `ifndef SV_ALGN_COVERAGE_SV
   `define SV_ALGN_COVERAGE_SV
 
-  `uvm_analysis_imp_decl(in_split_info)
+  `uvm_analysis_imp_decl(_in_split_info)
 
   class sv_algn_coverage extends uvm_component implements sv_algn_reset_handler ;
 
@@ -14,7 +14,7 @@
     ctrl_offset : coverpoint info.ctrl_offset {
         option.comment=" Value of ctrl_offset";
 
-        bins value[] = {[1:4]};
+        bins value[] = {[0:3]};
     }
     
        ctrl_size : coverpoint info.ctrl_size {
@@ -26,7 +26,7 @@
        item_offset : coverpoint info.item_offset {
         option.comment=" Value of item_offset";
 
-        bins value[] = {[1:4]};
+        bins value[] = {[0:3]};
     }
 
        item_size : coverpoint info.item_size {
@@ -57,13 +57,19 @@
   function new(string name = "" , uvm_component parent) ;
     super.new(name , parent);
 
-    cover_split = new("cover_split");
+    port_in_split_info = new("port_in_split_info",this);
+
+    cover_split = new();
     cover_split.set_inst_name($sformatf(%s_%s,get_full_name(),"cover_split"));
   endfunction
 
- virtual function void write_in_split_info();
+  virtual function void handle_reset(uvm_phase phase);
 
-    
+  endfunction
+
+ virtual function void write_in_split_info(sv_algn_split_info info);
+  
+  cover_split.sample(info);
 
  endfunction
 

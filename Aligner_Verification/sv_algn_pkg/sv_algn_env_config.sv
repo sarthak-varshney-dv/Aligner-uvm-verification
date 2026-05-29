@@ -104,6 +104,19 @@ virtual function void get_exp_irq_threshold(int unsigned value);
   
 endfunction
 
+virtual function void set_has_coverage(bit value);
+
+  has_coverage = value ;
+  
+endfunction
+
+virtual function bit get_has_coverage();
+
+  return has_coverage ;
+  
+endfunction
+
+
 virtual function void start_of_simulation_phase(uvm_phase phase);
   super.start_of_simulation_phase(phase);
      
@@ -116,23 +129,9 @@ virtual function void start_of_simulation_phase(uvm_phase phase);
 
 endfunction
 
-virtual function void set_has_coverage(bit value);
 
-  has_coverage = value ;
-  
-endfunction
 
-virtual function void set_has_coverage(bit value);
 
-  has_coverage = value ;
-  
-endfunction
-
-virtual function bit get_has_coverage();
-
-  return has_coverage ;
-  
-endfunction
 
 endclass
  `endif

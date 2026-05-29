@@ -100,6 +100,11 @@ class sv_algn_env extends uvm_env;
   virtual function void handle_reset(uvm_phase phase);
 
     model.handle_reset(phase);
+    scoreboard.handle_reset(phase);
+
+   if(coverage != null ) begin
+    coverage.handle_reset(phase);
+   end
   endfunction
   
   protected virtual task wait_reset_start()

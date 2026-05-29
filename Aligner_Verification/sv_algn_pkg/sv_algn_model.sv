@@ -70,7 +70,7 @@ function new(string name = "",uvm_component parent);
   port_out_rx  = new("port_out_rx",this);
   port_out_tx  = new("port_out_tx",this);
   port_out_irq = new("port_out_irq",this);
-  
+
   port_out_split_info = new("port_out_split_info",this);
 
   rx_fifo     = new("rx_fifo",this,8);
@@ -627,6 +627,19 @@ protected virtual task align () ;
       split(num_bytes_needed,buffer_item,splitted_items);
       buffer.push_back(splitted_items[1]);
       buffer.push_back(splitted_items[0]);
+
+       // sendinginfo to coverage
+      begin
+        sv_algn_split_info info = sv_algn_split_info::type_id::create("info");
+
+          info.ctrl_offset = ctrl_offset;
+          info.ctrl_size =  ctrl_size;
+          info.item_offset = buffer_item.offset ;
+          info.item_size  = buffer_item.data.size();
+          info.num_bytes_needed = num_bytes_needed ;
+
+          port_out_split_info.write(info);
+      end
     end
     end
   end
@@ -674,18 +687,7 @@ protected virtual function void split(int unsigned num_bytes , sv_md_item_mon it
 
       items.push_back(splitted_item) ;
 
-      // sendinginfo to coverage
-      begin
-        sv_algn_split_info info = sv_algn_split_info::type_id::create("info");
-
-          info.ctrl_offset = reg_block.CTRL.OFFSET.get_mirrored_value();
-          info.ctrl_size =   reg_block.CTRL.SIZE.get_mirrored_value();
-          info.item_offset = item.offset ;
-          info.item_size  = item.data.size();
-          info.num_bytes_needed = num_bytes ;
-
-          port_out_split_info.write(info);
-      end
+     
    end
 
 
