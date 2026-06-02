@@ -17,6 +17,7 @@ class sv_algn_test_random extends sv_algn_test_base;
 
   #(100ns);
 
+/*
 fork    //for starting slave_response_forever in the background
    
    begin
@@ -25,21 +26,32 @@ fork    //for starting slave_response_forever in the background
             seq_response.start(env.md_tx_agent.sequencer) ;
     end
 join_none
+*/
+
 
   //to enable all the interrupts as at reset all become zero
   env.model.reg_block.IRQEN.write(status,5'b11111);
 
   void'(env.model.reg_block.CTRL.randomize());
   env.model.reg_block.CTRL.update(status);
+
    begin
        repeat(10) begin
-      sv_md_sequence_simple_master seq= sv_md_sequence_base_master::type_id::create("seq");
-      seq.set_sequencer(env.md_rx_agent.sequencer);
+    //  sv_md_sequence_simple_master seq= sv_md_sequence_base_master::type_id::create("seq");
+    // seq.set_sequencer(env.md_rx_agent.sequencer);
 
      
-         void'(randomize(seq));
+    //     void'(randomize(seq));
 
-      seq.start(env.md_rx_agent.sequencer);
+    // seq.start(env.md_rx_agent.sequencer);
+
+      sv_algn_virtual_sequence_slow_pace seq = sv_algn_virtual_sequence_slow_pace::type_id::create("seq");
+
+      seq.set_sequencer(env.virtual_sequencer);
+
+      void'(seq.ramdomize());
+      
+      seq.start(env.virtual_sequencer);
 
       end
    end
