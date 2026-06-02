@@ -25,6 +25,7 @@ package sv_algn_pkg;
  `include "sv_algn_scoreboard.sv"
  `include "sv_algn_coverage.sv"
  `include "sv_algn_split_info"
+ `include "sv_algn_virtual_sequencer.sv"
 
 
 

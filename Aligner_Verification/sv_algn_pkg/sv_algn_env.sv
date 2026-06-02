@@ -16,6 +16,8 @@ class sv_algn_env extends uvm_env;
   sv_algn_scoreboard scoreboard ;
 
   sv_algn_coverage coverage ;
+
+  sv_algn_virtual_sequencer virtual_sequencer ;
   
   `uvm_component_utils(sv_algn_env)
   
@@ -43,6 +45,8 @@ class sv_algn_env extends uvm_env;
     if(env_config.get_has_coverage()) begin
       coverage = sv_algn_coverage::type_id::create("coverage",this);
     end
+
+    virtual_sequencer = sv_algn_virtual_sequencer::type_id::create("virtual_sequencer",this);
 
   endfunction
 
@@ -94,6 +98,13 @@ class sv_algn_env extends uvm_env;
   if(env_config.get_has_coverage()) begin
     model.port_out_split_info.connect(coverage.port_in_split_info);
   end  
+
+  //connections for virtual sequencer
+
+  virtual_sequencer.apb_sequencer = apb_agent.sequencer ;
+  virtual_sequencer.md_rx_sequencer = sv_md_sequencer_master_base'(md_rx_agent.sequencer);
+  virtual_sequencer.md_tx_sequencer = sv_md_sequencer_slave_base'(md_tx_agent.sequencer);
+  virtual_sequencer.model = model;
 
   endfunction
   
