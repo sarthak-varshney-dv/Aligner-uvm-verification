@@ -27,6 +27,8 @@ package sv_algn_pkg;
  `include "sv_algn_split_info"
  `include "sv_algn_virtual_sequencer.sv"
 
+ `include "sv_algn_virtual_sequence_base.sv"
+
 
 
 endpackage
