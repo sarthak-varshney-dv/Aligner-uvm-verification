@@ -1,7 +1,7 @@
 `ifndef SV_ALGN_TEST_REG_ACCESS_SV
  `define SV_ALGN_TEST_REG_ACCESS_SV
 
-class sv_algn_test_reg_access extends uvm_test;
+class sv_algn_test_reg_access extends sv_algn_test_base;
   
  
   `uvm_component_utils(sv_algn_test_reg_access)
@@ -51,10 +51,10 @@ class sv_algn_test_reg_access extends uvm_test;
       env.model.reg_block.CTRL.update(status);
 
       //to read 
-      env.model.reg_block.CTRL.read(status.data);
+      env.model.reg_block.CTRL.read(status,data);
 
       //to randomize the ctrl register according to constraints added in CTRL register file
-      void'(env.model.reg_block.CTRL.randomize) ;
+      void'(env.model.reg_block.CTRL.randomize()) ;
       env.model.reg_block.CTRL.update(status);
 
     end
@@ -74,9 +74,11 @@ class sv_algn_test_reg_access extends uvm_test;
       sv_apb_sequence_rw seq_rw = sv_apb_sequence_rw::type_id::create("seq");
 
       void'(seq_rw.randomize() with {
-        item.addr='h0;
-        item.data='h0011;
+        item.addr=='h0;
+        item.data=='h0011;
       });
+
+      seq_rw.start(env.apb_agent.sequencer);
     end
   join
 

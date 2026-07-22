@@ -13,7 +13,7 @@ class sv_algn_test_random extends sv_algn_test_base;
   virtual task run_phase(uvm_phase phase);
   uvm_status_e status;
  
-  phase.raise_objection(this."test_done");
+  phase.raise_objection(this,"test_done");
 
   #(100ns);
 
@@ -49,14 +49,14 @@ join_none
 
       seq.set_sequencer(env.virtual_sequencer);
 
-      void'(seq.ramdomize());
+      void'(seq.randomize());
       
       seq.start(env.virtual_sequencer);
 
       end
    end
 
-  phase.drop_objection(this."test_done");
+  phase.drop_objection(this,"test_done");
 
 
   endtask
