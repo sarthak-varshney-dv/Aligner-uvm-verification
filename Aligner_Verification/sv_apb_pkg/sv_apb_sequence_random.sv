@@ -20,9 +20,9 @@ endfunction
 
 task body();
 for(int i=0;i<num_items;i++) begin
-    sv_apb_sequence_simple seq = sv_apb_sequence_simple::type_id::create("seq");
+    sv_apb_sequence_simple seq ;
 
-    `uvm_send(seq)
+    `uvm_do(seq)
 end
 endtask
 

@@ -28,6 +28,8 @@ virtual task run_phase(uvm_phase phase);
   
 protected virtual task drive_transactions();
 
+//drive all signals zero (done in reset)
+
 fork
     begin
         process_drive_transaction=process::self();
@@ -50,10 +52,9 @@ endtask
 
 protected virtual task drive_transaction(sv_apb_item_drv item);
 
-//drive all signals zero (done in reset)
-sv_apb_vif = agent_config.get_vif();
+sv_apb_vif vif = agent_config.get_vif();
 
-`uvm_info("DEBUG", $sformatf("Driving \"%0s\": %0s",item.get_full_name(),item.convert2string()) UVM_NONE)
+`uvm_info("DEBUG", $sformatf("Driving \"%0s\": %0s",  item.get_full_name(), item.convert2string()), UVM_NONE)
 
 for(int i=0; i<pre_drive_delay;i++) begin
     @(posedge vif.pclk);
@@ -68,7 +69,7 @@ if(item.dir == SV_APB_WRITE) begin
 end
 @(posedge vif.pclk);
 
-penable <=1 ;
+vif.penable <=1 ;
 
 @(posedge vif.pclk);
 

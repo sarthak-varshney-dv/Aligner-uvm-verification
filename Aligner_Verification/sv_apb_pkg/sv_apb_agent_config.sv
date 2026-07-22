@@ -39,7 +39,7 @@ class sv_apb_agent_config extends uvm_component;
      return vif;
   endfunction
 
-  virtual function uvm_active_passive_enum get_active_passive()
+  virtual function uvm_active_passive_enum get_active_passive();
      return active_passive;
   endfunction
 
@@ -54,7 +54,7 @@ class sv_apb_agent_config extends uvm_component;
   end
   endfunction
 
-  virtual function bit get_has_checks()
+  virtual function bit get_has_checks();
   return has_checks;
   endfunction
 
@@ -64,18 +64,18 @@ class sv_apb_agent_config extends uvm_component;
   
   endfunction
 
-  virtual function bit get_has_coverage()
+  virtual function bit get_has_coverage();
   return has_coverage;
   endfunction
 
-    virtual function void set_stuck_threshold(bit value);
+    virtual function void set_stuck_threshold(int unsigned value);
     if(value<=2)begin     // since minimum clock cycles in apb transfer is 2
       `uvm_error("ALGORITHM_ISSUE","Tried to set stuck threshold less than  or equal to 2")
     end
   stuck_threshold=value;
   endfunction
 
-  virtual function bit get_stuck_threshold()
+  virtual function bit get_stuck_threshold();
   return stuck_threshold;
   endfunction
 
@@ -87,11 +87,11 @@ class sv_apb_agent_config extends uvm_component;
 
   virtual task wait_reset_end() //synchronous
   while(vif.preset_n == 0) begin
-   @(posedge vif.clk) ;
+   @(posedge vif.pclk) ;
   end
   endtask
 
-  virtual function void run_phase(uvm_phase phase);
+  virtual task run_phase(uvm_phase phase);
     forever begin
     @(vif.has_checks) ;
 
@@ -103,7 +103,7 @@ class sv_apb_agent_config extends uvm_component;
   
 
 
-  endfunction
+  endtask
 endclass
 
 `endif

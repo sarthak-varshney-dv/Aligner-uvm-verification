@@ -41,7 +41,7 @@
             `uvm_do_on_with(tx_sequence,p_sequencer.md_tx_sequencer,{
               num_tx_items == 1                                     -> item.response = SV_MD_OKAY ;
               num_tx_items > 1 && tx_item_idx < (num_tx_items - 1)   -> item.response = SV_MD_OKAY ;
-              num_tx_items > 1 && tx_item_idx += (num_tx_items - 1)   -> item.response = SV_MD_error ;
+              num_tx_items > 1 && tx_item_idx = (num_tx_items - 1)   -> item.response = SV_MD_error ;
 
 
             })

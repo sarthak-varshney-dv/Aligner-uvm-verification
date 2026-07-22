@@ -16,7 +16,7 @@
   
   `uvm_object_utils(sv_algn_split_info)
 
-  function new(string name = "")
+  function new(string name = "");
    super.new(name);
 
   endfunction

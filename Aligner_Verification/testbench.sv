@@ -8,8 +8,6 @@ module testbench();
   
   reg clk;
   
- // always #5 clk=~clk;   //for clock. cristan has declared clong in a long form
-  
   initial begin
     clk =0;
     forever begin

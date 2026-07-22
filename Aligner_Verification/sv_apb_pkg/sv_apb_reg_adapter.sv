@@ -5,8 +5,8 @@
 
  `uvm_object_utils(sv_apb_reg_adapter)
 
- function new(string name="")
- super.new(name)
+ function new(string name="");
+ super.new(name);
  endfunction
 
  virtual function void bus2reg(uvm_sequence_item bus_item,ref uvm_reg_bus_op rw);
@@ -20,7 +20,7 @@ if($cast(item_mon,bus_item) )begin
     rw.status = item_mon.response == SV_APB_OKAY ? UVM_IS_OK : UVM_NOT_OKAY ;
 end
   else if($cast(item_drv, bus_item)) begin  //used by reg2bus in the background
-        rw.kind = item_drv.dir == CFS_APB_WRITE? UVM_WRITE : UVM_READ;
+        rw.kind = item_drv.dir == SV_APB_WRITE? UVM_WRITE : UVM_READ;
         
         rw.addr   = item_drv.addr;
         rw.data   = item_drv.data;

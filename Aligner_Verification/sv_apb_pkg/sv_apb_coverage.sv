@@ -15,18 +15,20 @@
     bins indexes[max_value_plus_one] = {{0:max_value_plus_one-1}};
   }
 
+ endgroup
+
   virtual function new(string name="",uvm_component parent);
   super.new(name,parent);
 
   cover_index=new();
-  cover_index.set_inst_name($sformatf("%s_%s"),get_full_name(),"cover_index");
+  cover_index.set_inst_name($sformatf("%s_%s",get_full_name(),"cover_index"));
   endfunction 
 
   virtual function void sample(int unsigned value);
   cover_index.sample(value);
     
   endfunction
- endgroup
+
 
 
  endclass
@@ -136,7 +138,7 @@
  end
 
  //sampling of data index toggiling
- for(int i=0;i<`SV_APB_MAX_DATA_WIDTH,i++) begin
+ for(int i=0;i<`SV_APB_MAX_DATA_WIDTH;i++) begin
     
     case(item.dir)
        SV_APB_WRITE : begin
@@ -161,10 +163,10 @@
      end
     endcase
 
-
+ end
  endfunction
 virtual function void handle_reset(uvm_phase phase)
-   cfs_apb_vif vif = agent_config.get_vif();
+   sv_apb_vif vif = agent_config.get_vif();
     cover_reset.sample(vif.psel);     //sample the value of psel when reset is called. will indicate whether access was active or not while reset asserted.
 
 endfunction
@@ -172,7 +174,7 @@ endfunction
 /* we dont need this now we will do it now in the handle reset function which will automatically sample our condition when agent will call reset
 
  virtual task run_phase(uvm_phase phase)
-   cfs_apb_vif vif = agent_config.get_vif();
+   sv_apb_vif vif = agent_config.get_vif();
     
     forever begin
         @(negedge vif.preset_n);

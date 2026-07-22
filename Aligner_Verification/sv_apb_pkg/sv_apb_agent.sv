@@ -33,7 +33,7 @@ class sv_apb_agent extends uvm_agent implements sv_apb_reset_handler ;
     
     agent_config = sv_apb_agent_config::type_id::create("agent_config",this);
 
-if(agent_config.get_active_passive == UVM_ACTIVE) begin
+if(agent_config.get_active_passive() == UVM_ACTIVE) begin
     sequencer    = sv_apb_sequencer::type_id::create("sequencer",this);
     driver       = sv_apb_driver::type_id::create("driver",this);
 end
@@ -41,7 +41,7 @@ end
     monitor      = sv_apb_monitor::type_id::create("monitor",this);
 
     if(agent_config.get_has_coverage()) begin
-      coverage = sv_apb_coverage::type_id::create("coverage");
+      coverage = sv_apb_coverage::type_id::create("coverage",this);
       coverage.agent_config=agent_config;
     end
     
@@ -66,8 +66,8 @@ end
       
       monitor.agent_config=agent_config;
 
-      if(agent_config.get_has_checks) begin
-      coverage.port_item.connect(monitor.output_port);
+      if(agent_config.get_has_checks()) begin
+      monitor.output_port.connect(coverage.port_item);
     end
   endfunction
   
@@ -80,7 +80,7 @@ virtual function void handle_reset(uvm_phase phase)
   sv_apb_reset_handler handler;
   foreach(children[idx]) begin
     if($cast(handler,children[idx])) begin
-      handler.handle_reset();
+      handler.handle_reset(phase);
     end
   end
 endfunction
@@ -98,7 +98,7 @@ virtual task run_phase(uvm_phase phase)
 forever begin
 
   wait_reset_start();
-  handle_reset();
+  handle_reset(phase);
   wait_reset_end();
 
 end
