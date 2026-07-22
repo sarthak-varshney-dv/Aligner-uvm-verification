@@ -101,7 +101,7 @@
   end
   endtask
 
-  virtual function void run_phase(uvm_phase phase);
+  virtual task run_phase(uvm_phase phase);
     forever begin
     @(vif.has_checks) ;
 
@@ -113,7 +113,7 @@
   
 
 
-  endfunction
+  endtask
 
 
 

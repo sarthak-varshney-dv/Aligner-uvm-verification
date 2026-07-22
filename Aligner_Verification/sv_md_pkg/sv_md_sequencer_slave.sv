@@ -3,7 +3,7 @@
 
 
 
-class sv_md_sequencer_slave#(int unsigned DATA_WIDTH=32) extends sv_md_sequencer_alave_base implements sv_md_reset_handler ;
+class sv_md_sequencer_slave#(int unsigned DATA_WIDTH=32) extends sv_md_sequencer_slave_base implements sv_md_reset_handler ;
 
 
 `uvm_component_param_utils(sv_md_sequencer_slave)

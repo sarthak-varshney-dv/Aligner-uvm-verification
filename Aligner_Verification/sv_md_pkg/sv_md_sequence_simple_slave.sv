@@ -1,5 +1,5 @@
 `ifndef SV_MD_SEQUENCE_SIMPLE_SLAVE_SV
- `ifndef SV_MD_SEQUENCE_SIMPLE_SLAVE_SV
+ `define  SV_MD_SEQUENCE_SIMPLE_SLAVE_SV
 
 class sv_md_sequence_simple_slave extends sv_md_sequence_base_slave;
 

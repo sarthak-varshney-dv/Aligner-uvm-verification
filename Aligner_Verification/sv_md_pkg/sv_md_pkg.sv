@@ -7,6 +7,8 @@
 package sv_md_pkg ; 
 
 import uvm_pkg::*;
+`include "sv_md_types.sv"
+`include "sv_md_reset_handler.sv"
 
 `include "sv_md_agent_config.sv"
 `include "sv_md_agent_config_master.sv"
@@ -23,17 +25,19 @@ import uvm_pkg::*;
 `include "sv_md_sequencer_slave_base.sv"
 `include "sv_md_sequencer_slave.sv"
 
+`include "sv_md_driver.sv"
 `include "sv_md_driver_master.sv"
 `include "sv_md_driver_slave.sv"
-`include "sv_md_driver.sv"
+
 
 `include "sv_md_monitor.sv"
 `include "sv_md_coverage.sv"
 
+`include "sv_md_agent.sv"
 `include "sv_md_agent_master.sv"
 `include "sv_md_agent_slave.sv"
-`include "sv_md_agent.sv"
-`include "sv_md_reset_handler.sv"
+
+
 
 `include "sv_md_sequence_base.sv"
 `include "sv_md_sequence_base_master.sv"

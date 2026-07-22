@@ -17,7 +17,7 @@
   super.new(name,parent);
 
   cover_index=new();
-  cover_index.set_inst_name($sformatf("%s_%s"),get_full_name(),"cover_index");
+  cover_index.set_inst_namecover_index.set_inst_name( $sformatf("%s_%s", get_full_name(), "cover_index"));
   endfunction 
 
   virtual function void sample(int unsigned idx);
@@ -98,7 +98,7 @@ cover_reset=  new();
 cover_item.set_inst_name($sformatf("%s_%s",get_full_name(),"cover_item"));
 
 cover_data_index_1= sv_md_index_cover_wrapper::type_id::create("cover_data_index_1",this);
-cover_data_index_0= sv_md_index_cover_wrapper::type_id::create("cover_data_index_2",this);
+cover_data_index_0= sv_md_index_cover_wrapper::type_id::create("cover_data_index_0",this);
 
 
 

@@ -1,5 +1,5 @@
 `ifndef SV_MD_SEQUENCE_SLAVE_RESPONSE_FOREVER_SV
- `ifndef SV_MD_SEQUENCE_SLAVE_RESPONSE_FOREVER_SV
+ `define SV_MD_SEQUENCE_SLAVE_RESPONSE_FOREVER_SV
 
 class sv_md_sequence_slave_response_forever extends sv_md_sequence_base_slave;
 

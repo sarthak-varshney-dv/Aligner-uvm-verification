@@ -1,7 +1,7 @@
 `ifndef SV_MD_SEQUENCE_SIMPLE_MASTER_SV
  `define SV_MD_SEQUENCE_SIMPLE_MASTER_SV
 
- class sv_md_sequence_simple_master extends sv_md_sequence_base_master);
+ class sv_md_sequence_simple_master extends sv_md_sequence_base_master;
 
  rand sv_md_item_drv_master item;
 

@@ -30,14 +30,14 @@ class sv_md_agent(int unsigned DATA_WIDTH = 32 , type ITEM_DRV = sv_md_item_drv)
     
     agent_config = sv_md_agent_config#(DATA_WIDTH)::type_id::create("agent_config",this);
     
-    if(agent_config.get_active_passive == UVM_ACTIVE) begin
+    if(agent_config.get_active_passive() == UVM_ACTIVE) begin
     sequencer    =  sv_md_sequencer_base#(ITEM_DRV)::type_id::create("sequencer",this);
     driver       = sv_md_driver#(DATA_WIDTH,ITEM_DRV)::type_id::create("driver",this);
     end
 
     monitor      = sv_md_monitor#(DATA_WIDTH)::type_id::create("monitor",this);
 
-    if(agent_config.get_has_coverage==1) begin
+    if(agent_config.get_has_coverage()==1) begin
     coverage       = sv_md_coverage#(DATA_WIDTH)::type_id::create("coverage",this);
       
     end
@@ -78,7 +78,7 @@ virtual function void handle_reset(uvm_phase phase)
   sv_md_reset_handler handler;
   foreach(children[idx]) begin
     if($cast(handler,children[idx])) begin
-      handler.handle_reset();
+      handler.handle_reset(phase);
     end
   end
 endfunction
@@ -96,7 +96,7 @@ virtual task run_phase(uvm_phase phase)
 forever begin
 
   wait_reset_start();
-  handle_reset();
+  handle_reset(phase);
   wait_reset_end();
 
 end
