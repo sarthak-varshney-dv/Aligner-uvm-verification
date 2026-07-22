@@ -142,7 +142,7 @@
     
     case(item.dir)
        SV_APB_WRITE : begin
-    if(item.pwdata[i]) begin
+    if(item.data[i]) begin
     wrap_cover_pwdata_1.sample(i);
           end
     else begin
@@ -151,7 +151,7 @@
        end
 
     SV_APB_READ : begin
-    if(item.prdata[i]) begin
+    if(item.data[i]) begin
     wrap_cover_prdata_1.sample(i);
           end
     else begin
