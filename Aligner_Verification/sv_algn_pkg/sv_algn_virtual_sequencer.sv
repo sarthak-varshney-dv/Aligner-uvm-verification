@@ -1,4 +1,4 @@
-`ifdef SV_ALGN_VIRTUAL_SEQUENCER_SV
+`ifndef SV_ALGN_VIRTUAL_SEQUENCER_SV
  `define SV_ALGN_VIRTUAL_SEQUENCER_SV
 
   class sv_algn_virtual_sequencer extends uvm_sequencer ;

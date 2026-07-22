@@ -1,11 +1,11 @@
 `ifndef SV_ALGN_REG_PREDICTOR_SV
  `define SV_ALGN_REG_PREDICTOR_SV
 
- class sv_algn_reg_predictor#(type BUS_TYPE = uvm_sequencce_item) extends uvm_reg_predictor#(.BUS_TYPE(BUS_TYPE)) ;
+ class sv_algn_reg_predictor#(type BUS_TYPE = uvm_sequence_item) extends uvm_reg_predictor#(.BUS_TYPE(BUS_TYPE)) ;
 
    sv_algn_env_config env_config ; //for data_width related checks
  
-    `uvm_component_param_utils(cfs_algn_reg_predictor#(BUSTYPE))
+    `uvm_component_param_utils(sv_algn_reg_predictor#(BUS_TYPE))
     
     function new(string name = "", uvm_component parent);
       super.new(name, parent);
@@ -52,7 +52,7 @@
      if(operation.kind == UVM_WRITE) begin
         sv_algn_reg_ctrl ctrl ;
         if($cast(ctrl,register)) begin
-            uvm_reg_data_t offest = get_reg_field_value(ctrl.OFFSET , operation.data) ;
+            uvm_reg_data_t offset = get_reg_field_value(ctrl.OFFSET , operation.data) ;
             uvm_reg_data_t size = get_reg_field_value(ctrl.SIZE , operation.data) ;
 
             if(size == 0) begin
