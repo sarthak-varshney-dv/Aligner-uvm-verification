@@ -16,18 +16,18 @@
 
  `uvm_object_utils(sv_algn_reg_irqen)
 
- function new(string name ="")
- supre.new(.name(), .n_bits(32), .has_coverage(UVM_NO_COVERAGE));
+ function new(string name ="");
+ super.new(.name(), .n_bits(32), .has_coverage(UVM_NO_COVERAGE));
  endfunction
 
 
 virtual function void build()
 
-RX_FIFO_EMPTY = uvm_reg_field::type_id::create(.name("RX_FIFO_EMPTY"), .parent(null), .comtext(get_full_name()));
-RX_FIFO_FULL = uvm_reg_field::type_id::create(.name("RX_FIFO_FULL"), .parent(null), .comtext(get_full_name()));
-TX_FIFO_EMPTY = uvm_reg_field::type_id::create(.name("TX_FIFO_EMPTY"), .parent(null), .comtext(get_full_name()));
-TX_FIFO_FULL = uvm_reg_field::type_id::create(.name("TX_FIFO_FULL"), .parent(null), .comtext(get_full_name()));
-MAX_DROP = uvm_reg_field::type_id::create(.name("MAX_DROP"), .parent(null), .comtext(get_full_name()));
+RX_FIFO_EMPTY = uvm_reg_field::type_id::create(.name("RX_FIFO_EMPTY"), .parent(null), .contxt(get_full_name()));
+RX_FIFO_FULL = uvm_reg_field::type_id::create(.name("RX_FIFO_FULL"), .parent(null), .contxt(get_full_name()));
+TX_FIFO_EMPTY = uvm_reg_field::type_id::create(.name("TX_FIFO_EMPTY"), .parent(null), .contxt(get_full_name()));
+TX_FIFO_FULL = uvm_reg_field::type_id::create(.name("TX_FIFO_FULL"), .parent(null), .contxt(get_full_name()));
+MAX_DROP = uvm_reg_field::type_id::create(.name("MAX_DROP"), .parent(null), .contxt(get_full_name()));
 
 
 RX_FIFO_EMPTY.configure(
@@ -38,7 +38,7 @@ RX_FIFO_EMPTY.configure(
     .volatile(0),
     .reset(1'b0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -50,7 +50,7 @@ RX_FIFO_FULL.configure(
     .volatile(0),
     .reset(1'b0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -62,7 +62,7 @@ TX_FIFO_EMPTY.configure(
     .volatile(0),
     .reset(1'b0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -74,7 +74,7 @@ TX_FIFO_FULL.configure(
     .volatile(0),
     .reset(1'b0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -86,7 +86,7 @@ MAX_DROP.configure(
     .volatile(0),
     .reset(1'b0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 

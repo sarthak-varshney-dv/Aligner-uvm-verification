@@ -15,7 +15,7 @@ rand sv_algn_reg_irqen IRQEN ;
 
 function new(string name = "");
 
-super.new(name,UVM_NO_COVERAGE)
+super.new(name,UVM_NO_COVERAGE);
 endfunction
 
 virtual function void build();
@@ -31,10 +31,10 @@ default_map = create_map(
 
 default_map.set_check_on_read(1);
 
-CTRL = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .comtext(get_full_name()));
-STATUS = sv_algn_reg_ctrl::type_id::create(.name("STATUS"), .parent(null), .comtext(get_full_name()));
-IRQ = sv_algn_reg_ctrl::type_id::create(.name("IRQ"), .parent(null), .comtext(get_full_name()));
-IRQEN = sv_algn_reg_ctrl::type_id::create(.name("IRQEN"), .parent(null), .comtext(get_full_name()));
+CTRL = sv_algn_reg_ctrl::type_id::create(.name("CTRL"), .parent(null), .contxt(get_full_name()));
+STATUS = sv_algn_reg_status::type_id::create(.name("STATUS"), .parent(null), .contxt(get_full_name()));
+IRQ = sv_algn_reg_irq::type_id::create(.name("IRQ"), .parent(null), .contxt(get_full_name()));
+IRQEN = sv_algn_reg_irqen::type_id::create(.name("IRQEN"), .parent(null), .contxt(get_full_name()));
 
 CTRL.configure(.blk_parent(this));
 STATUS.configure(.blk_parent(this));
@@ -46,10 +46,10 @@ STATUS.build();
 IRQ.build();
 IRQEN.build();
 
-default_map.add_reg(.rg(CTRL),.offest('h0000),.rights("RW"));
-default_map.add_reg(.rg(STATUS),.offest('h000C),.rights("RO"));
-default_map.add_reg(.rg(IRQ),.offest('h00F0),.rights("RW"));
-default_map.add_reg(.rg(IRQEN),.offest('h00F4),.rights("RW"));
+default_map.add_reg(.rg(CTRL),.offset('h0000),.rights("RW"));
+default_map.add_reg(.rg(STATUS),.offset('h000C),.rights("RO"));
+default_map.add_reg(.rg(IRQ),.offset('h00F0),.rights("RW"));
+default_map.add_reg(.rg(IRQEN),.offset('h00F4),.rights("RW"));
 
 
 

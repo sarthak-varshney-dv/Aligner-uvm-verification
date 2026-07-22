@@ -9,18 +9,18 @@
 
  rand uvm_reg_field TX_LVL;
 
- `uvm_object_utils(sv_algn_reg_ctrl)
+ `uvm_object_utils(sv_algn_reg_status)
 
- function new(string name ="")
- supre.new(.name(), .n_bits(32), .has_coverage(UVM_NO_COVERAGE));
+ function new(string name ="");
+ super.new(.name(), .n_bits(32), .has_coverage(UVM_NO_COVERAGE));
  endfunction
 
 
 virtual function void build()
 
-CNT_DROP = uvm_reg_field::type_id::create(.name("CNT_DROP"), .parent(null), .comtext(get_full_name()));
-RX_LVL = uvm_reg_field::type_id::create(.name("RX_LVL"), .parent(null), .comtext(get_full_name()));
-TX_LVL = uvm_reg_field::type_id::create(.name("TX_LVL"), .parent(null), .comtext(get_full_name()));
+CNT_DROP = uvm_reg_field::type_id::create(.name("CNT_DROP"), .parent(null), .contxt(get_full_name()));
+RX_LVL = uvm_reg_field::type_id::create(.name("RX_LVL"), .parent(null), .contxt(get_full_name()));
+TX_LVL = uvm_reg_field::type_id::create(.name("TX_LVL"), .parent(null), .contxt(get_full_name()));
 
 CNT_DROP.configure(
     .parent(this),
@@ -30,7 +30,7 @@ CNT_DROP.configure(
     .volatile(0),
     .reset(8'h00),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -42,7 +42,7 @@ RX_LVL.configure(
     .volatile(0),
     .reset(4'h0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 
@@ -54,7 +54,7 @@ TX_LVL.configure(
     .volatile(0),
     .reset(4'h0),
     .has_reset(1),
-    is_rand(1),
+    .is_rand(1),
     .individually_accessible(0)
 );
 

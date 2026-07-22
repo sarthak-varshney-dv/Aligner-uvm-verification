@@ -13,6 +13,8 @@ package sv_algn_reg_pkg;
  `include "sv_algn_reg_status.sv"
  `include "sv_algn_reg_irqen.sv"
  `include "sv_algn_reg_irq.sv"
+ `include "sv_algn_reg_block.sv"
+
 
 
 endpackage

@@ -11,6 +11,7 @@
 
  virtual function void bus2reg(uvm_sequence_item bus_item,ref uvm_reg_bus_op rw);
 sv_apb_item_mon item_mon;
+sv_apb_item_drv item_drv;
 
 if($cast(item_mon,bus_item) )begin
     rw.kind = item_mon.dir == SV_APB_WRITE ? UVM_WRITE : UVM_READ ;
@@ -33,13 +34,13 @@ end
  endfunction
 
 virtual function uvm_sequence_item reg2bus(const ref uvm_reg_bus_op rw);
-sv_apb_item_drv item_drv =  sv_apb_item_drv::type_id::create("item") ;
+sv_apb_item_drv item_drv =  sv_apb_item_drv::type_id::create("item_drv") ;
 
 void'(item_drv.randomize with{ 
      
-     item.dir == (rw.kind == UVM_WRITE) ? SV_APB_WRITE : SV_APB_READ ;
-     item.data == rw.data ;
-     item.addr = rw.addr ; 
+     item_drv.dir == (rw.kind == UVM_WRITE) ? SV_APB_WRITE : SV_APB_READ ;
+     item_drv.data == rw.data ;
+     item_drv.addr = rw.addr ; 
 
 });
 return item_drv ;
